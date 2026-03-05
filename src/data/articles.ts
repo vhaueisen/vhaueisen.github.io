@@ -15,6 +15,19 @@ export const ARTICLES: ArticleItem[] = [
         tags: ['Roblox', 'ZEPETO', 'UGC', 'Brand Strategy', 'Gaming'],
     },
     {
+        id: 'propmark-palmeiras-bloxverse',
+        title: 'Palmeiras estreia universo virtual no Roblox',
+        publication: 'Propmark',
+        publicationUrl: 'https://propmark.com.br',
+        date: 'Apr 2025',
+        description:
+            'Press coverage of the Palmeiras Bloxverse launch on Roblox, featuring a direct quote from Vítor Haueisen as CTO of Rogue Unit. The article covers how the branded virtual world targets Gen Z and Millennial fans through mini-games, a virtual trophy room, and limited-edition avatar items.',
+        href: 'https://propmark.com.br/palmeiras-estreia-universo-virtual-no-roblox/',
+        color: COLORS.cyan,
+        tags: ['Roblox', 'Palmeiras', 'Branded Worlds', 'Press Coverage'],
+        type: 'press' as const,
+    },
+    {
         id: 'ieee-3d-workflow-vr',
         title: 'Workflow to Optimization of 3D Models for Game Development',
         publication: 'IEEE Xplore · SVR 2018',

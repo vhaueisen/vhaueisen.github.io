@@ -97,6 +97,8 @@ export interface ArticleItem {
     /** Branded CSS color — must use COLORS.* or css() helper. */
     color: CSSColor
     tags: string[]
+    /** 'authored' for articles written by the user, 'press' for coverage that quotes them. Defaults to 'authored'. */
+    type?: 'authored' | 'press'
 }
 
 // ─── Contact ─────────────────────────────────────────────────────────────────

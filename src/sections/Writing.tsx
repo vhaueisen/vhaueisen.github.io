@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion'
 import { FiArrowUpRight } from 'react-icons/fi'
-import { TbPencil } from 'react-icons/tb'
+import { TbPencil, TbNews } from 'react-icons/tb'
 import { SectionHeading, AnimatedEntrance, TagPill } from '../components/ui'
 import { COLORS } from '../constants/colors'
 import { ARTICLES } from '../data/articles'
@@ -99,8 +99,26 @@ function ArticleCard({ article, index, inView }: ArticleCardProps) {
         >
             {/* Publication label */}
             <div style={articlePublicationStyle}>
-                <TbPencil size={13} />
+                {article.type === 'press' ? <TbNews size={13} /> : <TbPencil size={13} />}
                 <span>{article.publication}</span>
+                {article.type === 'press' && (
+                    <span
+                        style={{
+                            fontSize: '0.65rem',
+                            fontWeight: 700,
+                            textTransform: 'uppercase',
+                            letterSpacing: '0.08em',
+                            background: `${COLORS.cyan}22`,
+                            color: COLORS.cyan,
+                            border: `1px solid ${COLORS.cyan}44`,
+                            borderRadius: '4px',
+                            padding: '1px 6px',
+                            marginLeft: '4px',
+                        }}
+                    >
+                        Press
+                    </span>
+                )}
             </div>
 
             {/* Title */}
@@ -133,7 +151,7 @@ export default function Writing() {
     const [sectionRef, inView] = useSectionInView<HTMLDivElement>()
 
     return (
-        <section id="writing" style={{ maxWidth: '1280px', margin: '0 auto' }}>
+        <section id="writing" className="section-container">
             <div ref={sectionRef}>
                 <SectionHeading
                     label="Writing"
