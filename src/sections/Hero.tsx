@@ -6,7 +6,7 @@ import { FiArrowDown, FiGithub, FiLinkedin } from 'react-icons/fi'
 import { AstronautModel, ModelFallback } from '../components/three'
 import { SocialIconLink, CanvasErrorBoundary } from '../components/ui'
 import { COLORS } from '../constants/colors'
-import { heroBadge, heroNameGradient, bodyText, flexRow, flexWrapRow } from '../styles'
+import { heroNameGradient, bodyText, flexRow, flexWrapRow } from '../styles'
 import type { CSSProperties } from 'react'
 
 const NAME_CHARS = 'VITOR HAUEISEN'.split('')
@@ -34,14 +34,6 @@ const heroNameContainerStyle: CSSProperties = {
     letterSpacing: '-0.04em',
     marginBottom: '24px',
     perspective: '600px',
-}
-
-const heroPulseDotStyle: CSSProperties = {
-    width: '6px',
-    height: '6px',
-    borderRadius: '50%',
-    background: COLORS.cyan,
-    animation: 'pulse 2s infinite',
 }
 
 const heroCanvasStyle: CSSProperties = {
@@ -77,17 +69,6 @@ export default function Hero() {
         <section id="hero" style={heroSectionStyle}>
             {/* Left: text content */}
             <div style={{ flex: 1, zIndex: 2, position: 'relative' }}>
-                {/* Badge */}
-                <motion.div
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.5, delay: 0.2 }}
-                    style={heroBadge}
-                >
-                    <span style={heroPulseDotStyle} />
-                    Available for US Remote Roles
-                </motion.div>
-
                 {/* Animated name */}
                 <motion.div
                     variants={containerVariants}

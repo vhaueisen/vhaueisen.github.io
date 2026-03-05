@@ -126,24 +126,6 @@ export const heroNameGradient: CSSProperties = {
     WebkitTextFillColor: 'transparent',
 }
 
-/**
- * Glass pill badge for the Hero "Available for Remote Roles" indicator.
- * Uses hex-alpha notation on COLORS.indigo to avoid repeating raw rgba literals.
- */
-export const heroBadge: CSSProperties = {
-    display: 'inline-flex',
-    alignItems: 'center',
-    gap: '8px',
-    padding: '6px 14px',
-    background: `${COLORS.indigo}1f`, // ~12% opacity
-    border: `1px solid ${COLORS.indigo}4d`, // ~30% opacity
-    borderRadius: '100px',
-    fontSize: '0.8rem',
-    color: COLORS.cyan,
-    fontWeight: 500,
-    marginBottom: '24px',
-}
-
 // ─── Utility helpers ─────────────────────────────────────────────────────────
 
 /**

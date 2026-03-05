@@ -51,7 +51,7 @@ const projectDescriptionStyle: CSSProperties = {
     fontSize: '0.875rem',
     color: COLORS.textSub,
     lineHeight: 1.65,
-    minHeight: '4lh',
+    minHeight: '5lh',
 }
 
 const projectCardsGridStyle: CSSProperties = {

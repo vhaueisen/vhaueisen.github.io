@@ -106,7 +106,6 @@ Two-layer approach — pick the right layer for the job:
   | `glassCard` / `glassCardActive` | Glassmorphism card surface |
   | `gradientText` / `gradientTextShort` | Gradient-clip text |
   | `heroNameGradient` | Per-character gradient in the Hero name animation |
-  | `heroBadge` | "Available for remote" pill in Hero |
   | `sectionLabel` / `sectionTitle` | Section heading typography |
   | `tagPill(color)` | Tag/badge pill |
   | `periodBadge(color)` | Experience period badge |
