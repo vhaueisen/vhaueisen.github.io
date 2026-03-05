@@ -1,8 +1,5 @@
 import type { ExperienceItem } from '../types'
 
-export const ITEM_HEIGHT = 110
-export const SCROLL_PER_ITEM = 320
-
 export const EXPERIENCE: ExperienceItem[] = [
     {
         role: 'Mobile Developer',

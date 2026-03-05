@@ -1,5 +1,5 @@
-import type { ReactNode, CSSProperties } from 'react'
 import { motion } from 'framer-motion'
+import type { ReactNode, CSSProperties } from 'react'
 
 interface AnimatedEntranceProps {
     children: ReactNode

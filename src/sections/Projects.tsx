@@ -1,14 +1,12 @@
-import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { useState } from 'react'
 import { FiGithub, FiExternalLink } from 'react-icons/fi'
 import { SiGoogleplay, SiAppstore } from 'react-icons/si'
 import { SectionHeading, GlassCard, TagPill, AnimatedEntrance } from '../components/ui'
-import { useSectionInView } from '../hooks/useSectionInView'
-import { PROJECTS } from '../data/projects'
 import { COLORS } from '../constants/colors'
+import { PROJECTS, PROJECT_TABS } from '../data/projects'
+import { useSectionInView } from '../hooks/useSectionInView'
 import type { ProjectItem, ProjectCategory } from '../types'
-
-const TABS: ProjectCategory[] = ['All', 'Mobile', '3D / AR', 'Web']
 
 // ─── Project card link row ────────────────────────────────────────────────────
 
@@ -168,7 +166,7 @@ export default function Projects() {
 
     const filtered = activeTab === 'All'
         ? PROJECTS
-        : PROJECTS.filter((p) => p.categories.includes(activeTab as Exclude<ProjectCategory, 'All'>))
+        : PROJECTS.filter((p) => p.categories.includes(activeTab))
 
     return (
         <section id="projects" style={{ padding: '100px 24px', maxWidth: '1280px', margin: '0 auto' }}>

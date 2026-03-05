@@ -1,6 +1,6 @@
-import type { ReactNode } from 'react'
 import { TbStethoscope, TbAugmentedReality, TbCube, TbBus, TbRocket, TbLink } from 'react-icons/tb'
 import type { ProjectItem, ProjectCategory } from '../types'
+import type { ReactNode } from 'react'
 
 // Icons must be created here as JSX — React elements, not components.
 // TypeScript uses ReactNode so the data file can own them cleanly.

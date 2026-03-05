@@ -1,5 +1,5 @@
-import type { ReactNode } from 'react'
 import { COLORS } from '../../constants/colors'
+import type { ReactNode } from 'react'
 
 interface SocialIconLinkProps {
     href: string

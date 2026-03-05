@@ -1,5 +1,5 @@
-import type { CSSProperties } from 'react'
 import { COLORS } from '../constants/colors'
+import type { CSSProperties } from 'react'
 
 /**
  * Reusable style objects for patterns that appear across 3+ components.
@@ -11,11 +11,11 @@ import { COLORS } from '../constants/colors'
 // ─── Cards ───────────────────────────────────────────────────────────────────
 
 export const glassCard: CSSProperties = {
-    background:           'rgba(13, 13, 31, 0.7)',
-    backdropFilter:        'blur(12px)',
-    WebkitBackdropFilter:  'blur(12px)',
-    border:                '1px solid rgba(99, 102, 241, 0.15)',
-    borderRadius:          '16px',
+    background: 'rgba(13, 13, 31, 0.7)',
+    backdropFilter: 'blur(12px)',
+    WebkitBackdropFilter: 'blur(12px)',
+    border: '1px solid rgba(99, 102, 241, 0.15)',
+    borderRadius: '16px',
 }
 
 export const glassCardActive: CSSProperties = {
@@ -26,33 +26,33 @@ export const glassCardActive: CSSProperties = {
 // ─── Typography ──────────────────────────────────────────────────────────────
 
 export const gradientText: CSSProperties = {
-    background:            'linear-gradient(135deg, #6366f1 0%, #22d3ee 50%, #a855f7 100%)',
-    WebkitBackgroundClip:  'text',
-    backgroundClip:        'text',
-    WebkitTextFillColor:   'transparent',
+    background: 'linear-gradient(135deg, #6366f1 0%, #22d3ee 50%, #a855f7 100%)',
+    WebkitBackgroundClip: 'text',
+    backgroundClip: 'text',
+    WebkitTextFillColor: 'transparent',
 }
 
 export const gradientTextShort: CSSProperties = {
-    background:            'linear-gradient(135deg, #6366f1, #22d3ee)',
-    WebkitBackgroundClip:  'text',
-    backgroundClip:        'text',
-    WebkitTextFillColor:   'transparent',
+    background: 'linear-gradient(135deg, #6366f1, #22d3ee)',
+    WebkitBackgroundClip: 'text',
+    backgroundClip: 'text',
+    WebkitTextFillColor: 'transparent',
 }
 
 export const sectionLabel: CSSProperties = {
-    fontSize:       '0.8rem',
-    textTransform:  'uppercase',
-    letterSpacing:  '0.15em',
-    color:          COLORS.indigo,
-    fontWeight:     600,
-    marginBottom:   '12px',
+    fontSize: '0.8rem',
+    textTransform: 'uppercase',
+    letterSpacing: '0.15em',
+    color: COLORS.indigo,
+    fontWeight: 600,
+    marginBottom: '12px',
 }
 
 export const sectionTitle: CSSProperties = {
-    fontSize:      'clamp(1.8rem, 4vw, 2.5rem)',
-    fontWeight:    800,
+    fontSize: 'clamp(1.8rem, 4vw, 2.5rem)',
+    fontWeight: 800,
     letterSpacing: '-0.03em',
-    color:         COLORS.textPrimary,
+    color: COLORS.textPrimary,
 }
 
 // ─── Dynamic style helpers ────────────────────────────────────────────────────
@@ -60,46 +60,46 @@ export const sectionTitle: CSSProperties = {
 /** Pill/badge style for a given accent color. */
 export function tagPill(color: string): CSSProperties {
     return {
-        display:      'inline-flex',
-        alignItems:   'center',
-        gap:          '6px',
-        padding:      '3px 10px',
-        background:   `${color}12`,
-        border:       `1px solid ${color}25`,
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: '6px',
+        padding: '3px 10px',
+        background: `${color}12`,
+        border: `1px solid ${color}25`,
         borderRadius: '100px',
-        fontSize:     '0.72rem',
-        color:        COLORS.textSub,
-        fontWeight:   500,
+        fontSize: '0.72rem',
+        color: COLORS.textSub,
+        fontWeight: 500,
     }
 }
 
 /** Period badge style for experience/projects. */
 export function periodBadge(color: string): CSSProperties {
     return {
-        padding:      '4px 12px',
-        background:   `${color}15`,
-        border:       `1px solid ${color}35`,
+        padding: '4px 12px',
+        background: `${color}15`,
+        border: `1px solid ${color}35`,
         borderRadius: '100px',
-        fontSize:     '0.72rem',
+        fontSize: '0.72rem',
         color,
-        fontWeight:   600,
-        whiteSpace:   'nowrap',
+        fontWeight: 600,
+        whiteSpace: 'nowrap',
     }
 }
 
 /** Icon container used in cards (glass icon box). */
 export function iconBox(color: string): CSSProperties {
     return {
-        width:          '40px',
-        height:         '40px',
-        borderRadius:   '10px',
-        background:     `${color}15`,
-        border:         `1px solid ${color}30`,
-        display:        'flex',
-        alignItems:     'center',
+        width: '40px',
+        height: '40px',
+        borderRadius: '10px',
+        background: `${color}15`,
+        border: `1px solid ${color}30`,
+        display: 'flex',
+        alignItems: 'center',
         justifyContent: 'center',
         color,
-        flexShrink:     0,
+        flexShrink: 0,
     }
 }
 

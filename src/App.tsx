@@ -1,11 +1,11 @@
-import SpaceBackground from './components/SpaceBackground'
 import Navbar from './components/Navbar'
-import Hero from './sections/Hero'
+import SpaceBackground from './components/SpaceBackground'
 import About from './sections/About'
+import Contact from './sections/Contact'
 import Experience from './sections/Experience'
+import Hero from './sections/Hero'
 import Projects from './sections/Projects'
 import Skills from './sections/Skills'
-import Contact from './sections/Contact'
 
 function App() {
     return (

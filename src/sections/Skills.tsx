@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion'
 import { SectionHeading, GlassCard, TagPill } from '../components/ui'
-import { useSectionInView } from '../hooks/useSectionInView'
 import { SKILL_GROUPS } from '../data/skills'
+import { useSectionInView } from '../hooks/useSectionInView'
 import type { SkillGroup } from '../types'
 
 // ─── Skill group card ─────────────────────────────────────────────────────────

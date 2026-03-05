@@ -1,9 +1,9 @@
 import { motion } from 'framer-motion'
 import { SiGoogleplay, SiAppstore } from 'react-icons/si'
 import { SectionHeading, GlassCard, TagPill, AnimatedEntrance } from '../components/ui'
-import { useSectionInView } from '../hooks/useSectionInView'
-import { STATS, BIO_PARAGRAPHS, ENTERPRISE_CLIENTS } from '../data/about'
 import { COLORS } from '../constants/colors'
+import { STATS, BIO_PARAGRAPHS, ENTERPRISE_CLIENTS } from '../data/about'
+import { useSectionInView } from '../hooks/useSectionInView'
 import { gradientText, gradientTextShort } from '../styles'
 import type { StatItem } from '../types'
 

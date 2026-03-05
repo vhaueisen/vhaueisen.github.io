@@ -1,5 +1,5 @@
-import type { ReactNode } from 'react'
 import { tagPill } from '../../styles'
+import type { ReactNode } from 'react'
 
 interface TagPillProps {
     label: string

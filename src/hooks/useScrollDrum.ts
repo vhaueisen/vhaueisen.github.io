@@ -1,6 +1,10 @@
-import { useState, useRef, useEffect } from 'react'
 import { useScroll } from 'framer-motion'
-import { SCROLL_PER_ITEM } from '../data/experience'
+import { useState, useRef, useEffect } from 'react'
+
+/** Height (px) of one timeline item row in the Experience drum UI. */
+export const ITEM_HEIGHT = 110
+/** Scroll budget (px) allocated per experience item in the drum track. */
+export const SCROLL_PER_ITEM = 320
 
 interface ScrollDrumState<T extends Element> {
     /** Ref to attach to the outer tall scroll-track container. */
@@ -47,5 +51,3 @@ export function useScrollDrum<T extends HTMLElement = HTMLDivElement>(
 
     return { scrollTrackRef, selectedIndex, drumPos, itemCount }
 }
-
-export { SCROLL_PER_ITEM }

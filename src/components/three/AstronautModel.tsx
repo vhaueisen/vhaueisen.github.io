@@ -1,7 +1,7 @@
-import { useRef } from 'react'
-import { useFrame } from '@react-three/fiber'
 import { Float, useGLTF, useAnimations } from '@react-three/drei'
-import * as THREE from 'three'
+import { useFrame } from '@react-three/fiber'
+import { useRef } from 'react'
+import type * as THREE from 'three'
 
 const ASTRONAUT_URL = 'https://modelviewer.dev/shared-assets/models/Astronaut.glb'
 
@@ -19,8 +19,8 @@ export function AstronautModel() {
 
     // Play the first clip if it exists and isn't already running
     const firstClip = animations[0]?.name
-    if (firstClip && actions[firstClip] && !actions[firstClip]!.isRunning()) {
-        actions[firstClip]!.play()
+    if (firstClip && actions[firstClip] && !actions[firstClip].isRunning()) {
+        actions[firstClip].play()
     }
 
     useFrame((_, delta) => {

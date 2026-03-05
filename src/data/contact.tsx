@@ -1,6 +1,6 @@
-import type { ReactNode } from 'react'
 import { FiMail, FiLinkedin, FiGithub } from 'react-icons/fi'
 import type { ContactLink } from '../types'
+import type { ReactNode } from 'react'
 
 const r = (node: ReactNode) => node
 

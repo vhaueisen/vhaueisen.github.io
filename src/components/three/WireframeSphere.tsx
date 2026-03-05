@@ -1,7 +1,7 @@
-import { useRef } from 'react'
-import { useFrame } from '@react-three/fiber'
 import { Float } from '@react-three/drei'
-import * as THREE from 'three'
+import { useFrame } from '@react-three/fiber'
+import { useRef } from 'react'
+import type * as THREE from 'three'
 
 /**
  * The animated wireframe icosahedron used in the Contact section.

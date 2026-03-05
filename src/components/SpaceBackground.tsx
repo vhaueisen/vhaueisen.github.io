@@ -1,5 +1,5 @@
-import { Canvas } from '@react-three/fiber'
 import { Stars } from '@react-three/drei'
+import { Canvas } from '@react-three/fiber'
 import { EffectComposer, Bloom } from '@react-three/postprocessing'
 import { FloatingShape, NebulaDust } from './three'
 

@@ -1,8 +1,8 @@
-import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { useScrollActive } from '../hooks/useScrollActive'
-import { NAV_LINKS, RESUME_URL } from '../constants/navigation'
+import { useState } from 'react'
 import { COLORS } from '../constants/colors'
+import { NAV_LINKS, RESUME_URL } from '../constants/navigation'
+import { useScrollActive } from '../hooks/useScrollActive'
 import { gradientTextShort } from '../styles'
 
 function scrollTo(href: string) {

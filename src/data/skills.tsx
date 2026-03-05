@@ -1,11 +1,11 @@
-import type { ReactNode } from 'react'
+import { FiZap, FiBox, FiCloud, FiTool } from 'react-icons/fi'
 import {
     SiReact, SiTypescript, SiJavascript, SiExpo, SiFirebase,
     SiGithubactions, SiAngular, SiSvelte, SiPython, SiUnity,
 } from 'react-icons/si'
 import { TbBrandReactNative } from 'react-icons/tb'
-import { FiZap, FiBox, FiCloud, FiTool } from 'react-icons/fi'
 import type { SkillGroup } from '../types'
+import type { ReactNode } from 'react'
 
 const r = (node: ReactNode) => node
 

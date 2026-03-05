@@ -1,5 +1,5 @@
-import type { CSSProperties, ReactNode } from 'react'
 import { glassCard } from '../../styles'
+import type { CSSProperties, ReactNode } from 'react'
 
 interface GlassCardProps {
     children: ReactNode

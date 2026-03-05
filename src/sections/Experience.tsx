@@ -1,9 +1,9 @@
 import { motion } from 'framer-motion'
+import { SectionHeading } from '../components/ui'
+import { COLORS } from '../constants/colors'
+import { EXPERIENCE, ITEM_HEIGHT, SCROLL_PER_ITEM } from '../data/experience'
 import { useScrollDrum } from '../hooks/useScrollDrum'
 import { useSectionInView } from '../hooks/useSectionInView'
-import { SectionHeading } from '../components/ui'
-import { EXPERIENCE, ITEM_HEIGHT, SCROLL_PER_ITEM } from '../data/experience'
-import { COLORS } from '../constants/colors'
 import type { ExperienceItem } from '../types'
 
 // ─── Timeline column ──────────────────────────────────────────────────────────
@@ -51,9 +51,9 @@ function Timeline({ items, selectedIndex, drumPos }: TimelineProps) {
             {/* Text rows with perspective tilt */}
             <div style={{ perspective: '400px', perspectiveOrigin: '50% 50%' }}>
                 {items.map((exp, i) => {
-                    const dist     = i - drumPos
-                    const opacity  = Math.max(0.18, 1 - Math.abs(dist) * 0.26)
-                    const rotateX  = dist * -11
+                    const dist = i - drumPos
+                    const opacity = Math.max(0.18, 1 - Math.abs(dist) * 0.26)
+                    const rotateX = dist * -11
                     const isActive = i === selectedIndex
 
                     return (
@@ -122,13 +122,13 @@ function DetailDrum({ items, selectedIndex, drumPos }: DetailDrumProps) {
             }} />
 
             {items.map((exp, i) => {
-                const dist       = i - drumPos
-                const absDist    = Math.abs(dist)
+                const dist = i - drumPos
+                const absDist = Math.abs(dist)
                 const translateY = dist * SLOT
-                const rotateX    = dist * -TILT
-                const opacity    = Math.max(0, 1 - absDist * 0.55)
-                const scale      = Math.max(0.82, 1 - absDist * 0.08)
-                const isActive   = i === selectedIndex
+                const rotateX = dist * -TILT
+                const opacity = Math.max(0, 1 - absDist * 0.55)
+                const scale = Math.max(0.82, 1 - absDist * 0.08)
+                const isActive = i === selectedIndex
 
                 return (
                     <div key={exp.company} style={{

@@ -1,5 +1,5 @@
-import { useRef } from 'react'
 import { useInView } from 'framer-motion'
+import { useRef } from 'react'
 
 /**
  * Returns a `[ref, inView]` tuple pre-configured with the portfolio's
