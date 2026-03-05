@@ -103,6 +103,18 @@ export default defineConfig([
         },
     },
 
+    // ─── Context files — intentional provider + hook co-location ────────────────
+    // React context best practice is to co-locate the Provider component with
+    // its companion useX() hook in the same file. The react-refresh rule would
+    // force them into separate files, which adds unnecessary indirection for
+    // small focused contexts like ProjectFilterContext.
+    {
+        files: ['src/context/**/*.{ts,tsx}'],
+        rules: {
+            'react-refresh/only-export-components': 'off',
+        },
+    },
+
     // ─── Relax type-aware rules for config / tooling files ────────────────────
     {
         files: ['*.config.{js,ts}', '*.config.*.{js,ts}'],

@@ -17,35 +17,35 @@ function Scene() {
                 position={[-8, 3, -8]}
                 rotation={[0.5, 0.3, 0]}
                 geometry="icosahedron"
-                color="#6366f1"
+                color={COLORS.indigo}
                 speed={0.4}
             />
             <FloatingShape
                 position={[9, -2, -10]}
                 rotation={[0.2, 0.8, 0.3]}
                 geometry="octahedron"
-                color="#22d3ee"
+                color={COLORS.cyan}
                 speed={0.3}
             />
             <FloatingShape
                 position={[-5, -5, -6]}
                 rotation={[1, 0.2, 0.5]}
                 geometry="torus"
-                color="#a855f7"
+                color={COLORS.purple}
                 speed={0.5}
             />
             <FloatingShape
                 position={[6, 5, -9]}
                 rotation={[0.8, 0.5, 0.2]}
                 geometry="tetrahedron"
-                color="#22d3ee"
+                color={COLORS.cyan}
                 speed={0.35}
             />
             <FloatingShape
                 position={[0, -7, -12]}
                 rotation={[0.3, 1.2, 0.4]}
                 geometry="icosahedron"
-                color="#a855f7"
+                color={COLORS.purple}
                 speed={0.25}
             />
             <EffectComposer>
