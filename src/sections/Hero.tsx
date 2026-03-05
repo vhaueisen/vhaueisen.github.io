@@ -1,59 +1,59 @@
-import { useRef } from 'react'
+import { useRef, Suspense } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
-import { Float, MeshDistortMaterial } from '@react-three/drei'
+import { Float, useGLTF, useAnimations, Environment } from '@react-three/drei'
 import { EffectComposer, Bloom } from '@react-three/postprocessing'
 import { motion } from 'framer-motion'
 import * as THREE from 'three'
 import { FiArrowDown, FiGithub, FiLinkedin } from 'react-icons/fi'
 
-function HeroOrb() {
-    const meshRef = useRef<THREE.Mesh>(null!)
+const ASTRONAUT_URL = 'https://modelviewer.dev/shared-assets/models/Astronaut.glb'
+
+useGLTF.preload(ASTRONAUT_URL)
+
+function AstronautModel() {
+    const groupRef = useRef<THREE.Group>(null!)
+    const { scene, animations } = useGLTF(ASTRONAUT_URL)
+    const { actions } = useAnimations(animations, groupRef)
+
+    // play first animation clip if available
+    const firstClip = animations[0]?.name
+    if (firstClip && actions[firstClip] && !actions[firstClip]!.isRunning()) {
+        actions[firstClip]!.play()
+    }
+
+    // slow idle rotation
     useFrame((_, delta) => {
-        if (meshRef.current) {
-            meshRef.current.rotation.y += delta * 0.4
-            meshRef.current.rotation.x += delta * 0.15
+        if (groupRef.current) {
+            groupRef.current.rotation.y += delta * 0.25
         }
     })
+
     return (
-        <Float speed={2} rotationIntensity={0.4} floatIntensity={0.8}>
-            <mesh ref={meshRef} scale={1.4}>
-                <torusKnotGeometry args={[1, 0.32, 128, 32]} />
-                <MeshDistortMaterial
-                    color="#6366f1"
-                    emissive="#6366f1"
-                    emissiveIntensity={0.6}
-                    roughness={0.1}
-                    metalness={0.8}
-                    distort={0.3}
-                    speed={2}
-                />
-            </mesh>
+        <Float speed={1.2} rotationIntensity={0.15} floatIntensity={0.4}>
+            {/* outer group provides a fixed tilt so the spin axis is crooked */}
+            <group rotation={[-0.25, 0, -0.3]}>
+                <group ref={groupRef} scale={2.2} position={[0, -2, 0]}>
+                    <primitive object={scene} />
+                </group>
+            </group>
         </Float>
     )
 }
 
-function HeroRing() {
-    const ringRef = useRef<THREE.Mesh>(null!)
+function ModelFallback() {
+    const meshRef = useRef<THREE.Mesh>(null!)
     useFrame((_, delta) => {
-        if (ringRef.current) {
-            ringRef.current.rotation.z += delta * 0.3
-        }
+        if (meshRef.current) meshRef.current.rotation.y += delta * 0.6
     })
     return (
-        <mesh ref={ringRef} position={[0, 0, -0.5]}>
-            <torusGeometry args={[2.2, 0.04, 8, 80]} />
-            <meshStandardMaterial
-                color="#22d3ee"
-                emissive="#22d3ee"
-                emissiveIntensity={1}
-                transparent
-                opacity={0.5}
-            />
+        <mesh ref={meshRef}>
+            <octahedronGeometry args={[1, 0]} />
+            <meshStandardMaterial color="#6366f1" wireframe />
         </mesh>
     )
 }
 
-const NAME_CHARS = 'VÍTOR RUAS'.split('')
+const NAME_CHARS = 'VITOR RUAS'.split('')
 
 const containerVariants = {
     hidden: {},
@@ -85,10 +85,11 @@ export default function Hero() {
                 maxWidth: '1280px',
                 margin: '0 auto',
                 gap: '48px',
+                position: 'relative',
             }}
         >
             {/* Left: text content */}
-            <div style={{ flex: 1, zIndex: 10 }}>
+            <div style={{ flex: '0 0 55%', zIndex: 10 }}>
                 {/* Badge */}
                 <motion.div
                     initial={{ opacity: 0, x: -20 }}
@@ -267,21 +268,28 @@ export default function Hero() {
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 1, delay: 0.5, ease: 'easeOut' }}
                 style={{
-                    flex: '0 0 420px',
-                    height: '420px',
                     display: 'none',
-                    position: 'relative',
+                    position: 'absolute',
+                    right: '-40px',
+                    top: '12em',
+                    transform: 'translateY(-50%)',
+                    width: '620px',
+                    height: '620px',
+                    pointerEvents: 'none',
                 }}
                 className="hero-canvas-wrapper"
             >
-                <Canvas camera={{ position: [0, 0, 5], fov: 50 }}>
-                    <ambientLight intensity={0.3} />
-                    <pointLight position={[5, 5, 5]} color="#6366f1" intensity={2} />
-                    <pointLight position={[-5, -5, 3]} color="#22d3ee" intensity={1.5} />
-                    <HeroOrb />
-                    <HeroRing />
+                <Canvas camera={{ position: [0, 0, 5], fov: 55 }} shadows>
+                    <ambientLight intensity={0.6} />
+                    <directionalLight position={[5, 8, 5]} intensity={1.2} castShadow />
+                    <pointLight position={[-4, 2, 4]} color="#6366f1" intensity={3} />
+                    <pointLight position={[4, -3, 2]} color="#22d3ee" intensity={2} />
+                    <Environment preset="city" />
+                    <Suspense fallback={<ModelFallback />}>
+                        <AstronautModel />
+                    </Suspense>
                     <EffectComposer>
-                        <Bloom intensity={1.2} luminanceThreshold={0.05} luminanceSmoothing={0.9} mipmapBlur />
+                        <Bloom intensity={0.5} luminanceThreshold={0.3} luminanceSmoothing={0.9} mipmapBlur />
                     </EffectComposer>
                 </Canvas>
             </motion.div>
