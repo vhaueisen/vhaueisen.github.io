@@ -1,6 +1,9 @@
 import { useInView } from 'framer-motion'
 import { useRef } from 'react'
 
+/** Extracts the exact `margin` type from Framer Motion's `useInView` signature. */
+type InViewMargin = NonNullable<Parameters<typeof useInView>[1]>['margin']
+
 /**
  * Returns a `[ref, inView]` tuple pre-configured with the portfolio's
  * standard entrance animation options (`once: true, margin: '-80px'`).
@@ -11,8 +14,7 @@ import { useRef } from 'react'
  * ```
  */
 export function useSectionInView<T extends Element = HTMLDivElement>(margin = '-80px') {
-  const ref = useRef<T>(null)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const inView = useInView(ref, { once: true, margin: margin as any })
-  return [ref, inView] as const
+    const ref = useRef<T>(null)
+    const inView = useInView(ref, { once: true, margin: margin as InViewMargin })
+    return [ref, inView] as const
 }

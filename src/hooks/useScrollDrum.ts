@@ -1,5 +1,5 @@
 import { useScroll, useTransform } from 'framer-motion'
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, type RefObject } from 'react'
 import type { MotionValue } from 'framer-motion'
 
 /** Height (px) of one timeline item row in the Experience drum UI. */
@@ -9,7 +9,7 @@ export const SCROLL_PER_ITEM = 320
 
 interface ScrollDrumState<T extends Element> {
     /** Ref to attach to the outer tall scroll-track container. */
-    scrollTrackRef: React.RefObject<T | null>
+    scrollTrackRef: RefObject<T | null>
     /**
      * Fractional position in the list (e.g. 1.7 = between item 1 and 2).
      * Used to compute perspective-tilt offsets.
@@ -40,7 +40,7 @@ export function useScrollDrum<T extends HTMLElement = HTMLDivElement>(
     const [drumPos, setDrumPos] = useState(0)
 
     const { scrollYProgress } = useScroll({
-        target: scrollTrackRef as React.RefObject<HTMLElement>,
+        target: scrollTrackRef as RefObject<HTMLElement>,
         offset: ['start start', 'end end'],
     })
 
