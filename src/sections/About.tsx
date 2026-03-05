@@ -86,35 +86,10 @@ export default function About() {
                                 </p>
                             </AnimatedEntrance>
                         ))}
-                    </div>
-
-                    {/* Stats + cards — right column */}
-                    <div>
-                        {/* Stats */}
-                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', marginBottom: '32px' }}>
-                            {STATS.map((stat, i) => (
-                                <StatCard key={stat.label} {...stat} index={i} inView={inView} />
-                            ))}
-                        </div>
-
-                        {/* Enterprise Clients */}
-                        <AnimatedEntrance delay={0.5} inView={inView}>
-                            <GlassCard style={{ padding: '24px', marginBottom: '16px' }}>
-                                <div style={cardSectionLabel()}>Enterprise Clients</div>
-                                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
-                                    {ENTERPRISE_CLIENTS.map((client) => (
-                                        <TagPill key={client} label={client} color={COLORS.indigo} />
-                                    ))}
-                                </div>
-                            </GlassCard>
-                        </AnimatedEntrance>
-
-                        {/* Published on */}
                         <AnimatedEntrance delay={0.65} inView={inView}>
-                            <GlassCard style={{ padding: '24px' }}>
-                                <div style={cardSectionLabel()}>Published on</div>
-                                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px' }}>
-                                    {STORE_LINKS.map(({ label, sub, icon, href, color, bg, border, hoverBg, hoverBorder }) => (
+                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px' }}>
+                                {STORE_LINKS.map(
+                                    ({ label, sub, icon, href, color, bg, border, hoverBg, hoverBorder }) => (
                                         // motion.a + whileHover replaces onMouseEnter/onMouseLeave imperative mutations.
                                         // Per-link accent colors are safely passed as Framer Motion animated values.
                                         <motion.a
@@ -157,6 +132,28 @@ export default function About() {
                                                 <span style={{ fontSize: '0.72rem', color, opacity: 0.85 }}>{sub}</span>
                                             </span>
                                         </motion.a>
+                                    )
+                                )}
+                            </div>
+                        </AnimatedEntrance>
+                    </div>
+
+                    {/* Stats + cards — right column */}
+                    <div>
+                        {/* Stats */}
+                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', marginBottom: '32px' }}>
+                            {STATS.map((stat, i) => (
+                                <StatCard key={stat.label} {...stat} index={i} inView={inView} />
+                            ))}
+                        </div>
+
+                        {/* Enterprise Clients */}
+                        <AnimatedEntrance delay={0.5} inView={inView}>
+                            <GlassCard style={{ padding: '24px', marginBottom: '16px' }}>
+                                <div style={cardSectionLabel()}>Enterprise Clients</div>
+                                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
+                                    {ENTERPRISE_CLIENTS.map((client) => (
+                                        <TagPill key={client} label={client} color={COLORS.indigo} />
                                     ))}
                                 </div>
                             </GlassCard>

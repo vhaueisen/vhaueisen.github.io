@@ -99,9 +99,27 @@ Two-layer approach — pick the right layer for the job:
 - **Never duplicate** the gradient text clip pattern inline. Use `gradientText` or `gradientTextShort` from `src/styles`.
 - **Never hardcode** palette hex values in components — not in `style` props. Always use `COLORS` from `src/constants/colors.ts` or a `var(--color-*)` CSS custom property.
 - The `COLORS` object mirrors the `@theme` block in `src/index.css`. Both must stay in sync when the palette changes.
-- `src/styles/index.ts` exports helper functions (`accentBorder`, `iconBox`, `periodBadge`, `tagPill`) in addition to the style constants. Use them instead of recreating the same multi-property object inline.
+- `src/styles/index.ts` exports helper functions and constants — use them instead of recreating the same multi-property object inline:
+
+  | Export | Use for |
+  |---|---|
+  | `glassCard` / `glassCardActive` | Glassmorphism card surface |
+  | `gradientText` / `gradientTextShort` | Gradient-clip text |
+  | `heroNameGradient` | Per-character gradient in the Hero name animation |
+  | `heroBadge` | "Available for remote" pill in Hero |
+  | `sectionLabel` / `sectionTitle` | Section heading typography |
+  | `tagPill(color)` | Tag/badge pill |
+  | `periodBadge(color)` | Experience period badge |
+  | `iconBox(color)` | Square icon container inside cards |
+  | `accentBorder(color, active)` | Hover/active border + glow on glass cards |
+  | `cardSectionLabel(color?)` | Small uppercase sub-label inside glass cards (e.g. "Enterprise Clients") |
+  | `indigoCyanGradient` / `indigoPurpleGradient` | CSS gradient strings for use in JS |
+
+- Multi-property style objects defined in a single component that do not vary per-instance belong at **module scope**, not inside the component body. Name them descriptively (e.g. `navScrolledStyle`, `navTransparentStyle`).
 - Global utility classes defined in `src/index.css` (`.glass`, `.gradient-text`, `.btn-primary`, `.btn-secondary`) are for HTML elements that can't accept TS style objects.
-- Hover states for interactive elements belong in `src/index.css` as named CSS classes referencing `var(--color-*)` tokens. Never use `onMouseEnter`/`onMouseLeave` to imperatively mutate `e.currentTarget.style`.
+- Hover state updates for interactive elements must use one of two approaches — never `onMouseEnter`/`onMouseLeave` imperative mutations:
+  1. **Framer Motion** `whileHover={{ ... }}` when the element is already a `motion.*` component.
+  2. **CSS class** in `src/index.css` with a `:hover` rule referencing `var(--color-*)` tokens.
 
 ---
 
@@ -111,6 +129,33 @@ Two-layer approach — pick the right layer for the job:
 - Group rules under named section comments: `/* ─── Navbar … */`, `/* ─── Hero … */`, etc.
 - CSS hover rules must reference `@theme` custom properties (`var(--color-accent-indigo)`, `var(--color-text-primary)`, …), not raw hex values.
 - Responsive show/hide is handled with `.nav-desktop` / `.nav-mobile-toggle` classes and `@media` blocks in this file, not with inline `display` style toggling.
+
+---
+
+## Context and state management (`src/context/`)
+
+For UI state shared across multiple sub-components in a section, use a **reducer + context** pattern:
+
+1. Define a discriminated-union action type (every variant is handled at compile time via `never` exhaustive check in the reducer).
+2. Implement a pure `reducer` function.
+3. Create the context with `createContext<Value | null>(null)` — the `null` sentinel lets the consumer hook detect misuse.
+4. Export a `<Provider>` component and a named consumer hook that throws a descriptive error when called outside the provider.
+
+Example (see `src/context/ProjectFilterContext.tsx`):
+
+```ts
+export type FilterAction =
+  | { type: 'SET_CATEGORY'; payload: ProjectCategory }
+  | { type: 'RESET' }
+
+// In the reducer's default branch:
+const _exhaustive: never = action
+return _exhaustive  // compile error if a new action type is unhandled
+```
+
+- Context files live in `src/context/`. Name them `<Feature>Context.tsx`.
+- Co-locate the reducer, provider, and consumer hook in the same file — splitting them adds ceremony without benefit at this scale.
+- The context object itself is **not** exported — only the provider and the consumer hook are public API.
 
 ---
 
@@ -140,11 +185,31 @@ Two-layer approach — pick the right layer for the job:
 | Component | Purpose |
 |---|---|
 | `SectionHeading` | Animated `label` + `h2` + optional `subtitle` block used in every section |
-| `GlassCard` | Glassmorphism card wrapper. Pass `accentColor` + `active` for hover treatment |
+| `GlassCard` | Glassmorphism card — compound component with `.Header` and `.Body` sub-components |
 | `TagPill` | Single tag/badge pill with icon support; used in Projects, Skills, About |
 | `SocialIconLink` | Icon `<a>` with hover color swap via CSS custom property |
-| `AnimatedEntrance` | `opacity/y → visible` entrance wrapper; pass `inView` for scroll-triggered variant |
+| `AnimatedEntrance` | `opacity/y → visible` entrance wrapper; pass `inView` for scroll-triggered variant, `exit` for use inside `<AnimatePresence>` |
 | `CanvasErrorBoundary` | Class-based error boundary that catches WebGL/R3F failures and renders a glass-card fallback |
+
+### `GlassCard` compound component
+
+`GlassCard` exposes static sub-components via `Object.assign`. Use them to avoid prop-drilling the accent color:
+
+```tsx
+// Basic usage (backward-compatible)
+<GlassCard accentColor={color} active={hovered} style={{ padding: '28px' }}>
+  {children}
+</GlassCard>
+
+// Compound usage — Header and Body receive accentColor from context automatically
+<GlassCard accentColor={color}>
+  <GlassCard.Header title="Project Name" subtitle="Description" />
+  <GlassCard.Body>{children}</GlassCard.Body>
+</GlassCard>
+```
+
+- `GlassCardContext` is internal — it is **not** exported. Sub-components read it with `useContext` inside the file.
+- When `onClick` is passed to `GlassCard`, the root `<div>` automatically receives `role="button"`, `tabIndex={0}`, and an `onKeyDown` handler (Enter/Space) for keyboard accessibility.
 
 ### Component conventions
 
@@ -154,6 +219,7 @@ Two-layer approach — pick the right layer for the job:
 - Prefer `style` spread composition over `className` overrides for layout that varies from call site to call site.
 - Use the `className` prop only for named CSS class overrides that don't require dynamic values.
 - `key` props belong only on list children. Never place `key` on an element that is not inside a `.map()` — it is a no-op and indicates a copy-paste error.
+- Use stable content as list keys (e.g. `text.slice(0, 30)`, `item.id`, `item.label`) — never array index unless the list is guaranteed static and never reordered.
 
 ---
 
@@ -242,11 +308,13 @@ Two-layer approach — pick the right layer for the job:
 
 - Import palette hex values directly in components — always use `COLORS`.
 - Hardcode hex values in `style` props — use `COLORS.*` tokens instead.
+- Use raw color strings (hex, rgba) in data files — use `COLORS.*` or the `css()` helper. The `CSSColor` branded type will reject bare strings at compile time.
 - Define inline style objects with more than two properties repeatedly — extract to `src/styles/`.
-- Use `onMouseEnter`/`onMouseLeave` to imperatively mutate `e.currentTarget.style` — use a CSS class with a `:hover` rule in `src/index.css`.
+- Define multi-property style objects inside a component function body when they don't vary per-render — lift them to module scope.
+- Use `onMouseEnter`/`onMouseLeave` to imperatively mutate `e.currentTarget.style` — use Framer Motion `whileHover` or a CSS `:hover` class.
 - Write CSS hover rules with raw hex values — reference `var(--color-*)` `@theme` tokens.
-- Add `useState` for hover effects when a CSS transition suffices (except where JS state is genuinely needed for conditional rendering).
-- Use `index` as a React `key` unless the list is static and never reordered.
+- Add `useState` for hover effects — use Framer Motion `whileHover` instead (no extra re-render).
+- Use `index` as a React `key` — use stable content (`.id`, `.label`, `.slice(0,30)`) instead.
 - Inline `<style>` tags anywhere — all styles go in `src/index.css` or as `style`/`className` props.
 - Duplicate data arrays across files — one source of truth in `src/data/`.
 - Duplicate type shapes locally — one source of truth in `src/types/index.ts`.
@@ -256,3 +324,6 @@ Two-layer approach — pick the right layer for the job:
 - Run Three.js side effects (`.play()`, `.pause()`, mutations) in the render body — always `useEffect`.
 - Use `React.X` namespace references — always use named `import type { X } from 'react'`.
 - Cast to `any` — use `Parameters<typeof fn>[n]` or `as unknown as T` with a comment.
+- Use an anonymous inline intersection type for a sub-component's props — always declare a named `<Name>Props` interface.
+- Use `rel="noopener noreferrer"` on `mailto:` links — opener/referrer policy applies to navigations only.
+- Export the internal context object from a context file — only the provider component and the consumer hook are public API.
