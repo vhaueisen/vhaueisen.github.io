@@ -2,13 +2,6 @@ import { COLORS } from '../constants/colors'
 import type { CSSColor } from '../constants/colors'
 import type { CSSProperties } from 'react'
 
-/**
- * Reusable style objects for patterns that appear across 3+ components.
- * Use Tailwind for single-property overrides; use these constants for
- * multi-property compound styles that can't be expressed cleanly as
- * individual utility classes (glassmorphism, gradient-clip, 3D transforms).
- */
-
 // ─── Cards ───────────────────────────────────────────────────────────────────
 
 export const glassCard: CSSProperties = {

@@ -2,7 +2,7 @@
 
 ## Stack
 
-React 19 · TypeScript 5 · Vite 7 · Tailwind CSS 4 · Framer Motion 12 · Three.js 0.183 (`@react-three/fiber`, `@react-three/drei`, `@react-three/postprocessing`) · `react-icons`
+React 19 · TypeScript 5 · Vite 7 · Framer Motion 12 · Three.js 0.183 (`@react-three/fiber`, `@react-three/drei`, `@react-three/postprocessing`) · `react-icons`
 
 ---
 
@@ -43,7 +43,6 @@ Two-layer approach — pick the right layer for the job:
 
 | Situation | Use |
 |---|---|
-| Single-property layout/spacing/typography | Tailwind utility class |
 | Multi-property compound style (glassmorphism, gradient-clip, 3D transform sequences) | `CSSProperties` constant from `src/styles/index.ts` |
 | Per-component dynamic value (accent color from a data item) | Inline `style` prop, composed with spread: `{ ...glassCard, border: ... }` |
 
@@ -51,7 +50,7 @@ Two-layer approach — pick the right layer for the job:
 
 - **Never duplicate** `rgba(13,13,31,0.7)` + `backdropFilter` + `border` inline. Use `glassCard` from `src/styles`.
 - **Never duplicate** the gradient text clip pattern inline. Use `gradientText` or `gradientTextShort` from `src/styles`.
-- **Never hardcode** palette hex values in components — not in `style` props, not inside Tailwind arbitrary value brackets (`text-[#64748b]`). Always use `COLORS` from `src/constants/colors.ts` or a `var(--color-*)` CSS custom property.
+- **Never hardcode** palette hex values in components — not in `style` props. Always use `COLORS` from `src/constants/colors.ts` or a `var(--color-*)` CSS custom property.
 - The `COLORS` object mirrors the `@theme` block in `src/index.css`. Both must stay in sync when the palette changes.
 - `src/styles/index.ts` exports helper functions (`accentBorder`, `iconBox`, `periodBadge`, `tagPill`) in addition to the style constants. Use them instead of recreating the same multi-property object inline.
 - Global utility classes defined in `src/index.css` (`.glass`, `.gradient-text`, `.btn-primary`, `.btn-secondary`) are for HTML elements that can't accept TS style objects.
@@ -106,7 +105,7 @@ Two-layer approach — pick the right layer for the job:
 - Props interfaces must be declared immediately above the component function and named `<ComponentName>Props`.
 - Components that accept `children` should type it as `ReactNode`.
 - Prefer `style` spread composition over `className` overrides for layout that varies from call site to call site.
-- Use the `className` prop only for Tailwind utility overrides that don't require dynamic values.
+- Use the `className` prop only for named CSS class overrides that don't require dynamic values.
 - `key` props belong only on list children. Never place `key` on an element that is not inside a `.map()` — it is a no-op and indicates a copy-paste error.
 
 ---
@@ -195,7 +194,7 @@ Two-layer approach — pick the right layer for the job:
 ## Do not
 
 - Import palette hex values directly in components — always use `COLORS`.
-- Hardcode hex values inside Tailwind arbitrary value brackets (`text-[#64748b]`) — use `style={{ color: COLORS.x }}` instead.
+- Hardcode hex values in `style` props — use `COLORS.*` tokens instead.
 - Define inline style objects with more than two properties repeatedly — extract to `src/styles/`.
 - Use `onMouseEnter`/`onMouseLeave` to imperatively mutate `e.currentTarget.style` — use a CSS class with a `:hover` rule in `src/index.css`.
 - Write CSS hover rules with raw hex values — reference `var(--color-*)` `@theme` tokens.

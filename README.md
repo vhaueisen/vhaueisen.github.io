@@ -10,7 +10,7 @@ Personal portfolio website for **Vitor Haueisen Costa Ruas**, Senior Mobile Engi
 | Build tool | Vite 7 |
 | 3D / WebGL | Three.js, React Three Fiber, Drei, Postprocessing |
 | Animations | Framer Motion |
-| Styling | Tailwind CSS v4 |
+| Styling | Plain CSS custom properties (`var(--color-*)`) |
 | Icons | React Icons |
 | Linting | ESLint + typescript-eslint |
 
