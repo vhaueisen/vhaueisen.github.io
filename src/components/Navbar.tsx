@@ -56,7 +56,7 @@ export default function Navbar() {
                     ...gradientTextShort,
                 }}
             >
-                VR
+                VH
             </a>
 
             {/* Desktop nav */}

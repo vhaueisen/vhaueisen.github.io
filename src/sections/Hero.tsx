@@ -1,6 +1,6 @@
 import { useRef, Suspense } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
-import { Float, useGLTF, useAnimations, Environment } from '@react-three/drei'
+import { Float, useGLTF, useAnimations, Environment, Center } from '@react-three/drei'
 import { EffectComposer, Bloom } from '@react-three/postprocessing'
 import { motion } from 'framer-motion'
 import * as THREE from 'three'
@@ -32,8 +32,10 @@ function AstronautModel() {
 
     return (
         <Float speed={1.2} rotationIntensity={0.15} floatIntensity={0.4}>
-            <group ref={groupRef} scale={1.5} position={[0, -1, 0]}>
-                <primitive object={scene} />
+            <group ref={groupRef} scale={2}>
+                <Center>
+                    <primitive object={scene} />
+                </Center>
             </group>
         </Float>
     )
@@ -268,10 +270,10 @@ export default function Hero() {
                 transition={{ duration: 1, delay: 0.5, ease: 'easeOut' }}
                 style={{
                     position: 'absolute',
-                    right: 0,
-                    top: 0,
-                    width: '50%',
-                    height: '100%',
+                    right: 40,
+                    top: 40,
+                    width: 'calc(50% - 40px)',
+                    height: 'calc(100% - 80px)',
                     display: 'none',
                     zIndex: 1,
                     pointerEvents: 'none',
@@ -279,10 +281,16 @@ export default function Hero() {
                 className="hero-canvas-wrapper"
             >
                 <Canvas camera={{ position: [0, 0, 5], fov: 55 }} shadows>
-                    <ambientLight intensity={0.6} />
-                    <directionalLight position={[5, 8, 5]} intensity={1.2} castShadow />
-                    <pointLight position={[-4, 2, 4]} color="#6366f1" intensity={3} />
-                    <pointLight position={[4, -3, 2]} color="#22d3ee" intensity={2} />
+                    {/* Dark purple ambient — low intensity keeps the scene moody */}
+                    <ambientLight color="#2e1065" intensity={0.1} />
+                    {/* Hemisphere: deep violet sky / near-black ground */}
+                    <hemisphereLight args={["#4c1d95", "#0d0d1f", 0.6]} />
+                    {/* Key light: soft purple from upper-left */}
+                    <directionalLight position={[-4, 6, 4]} color="#7c3aed" intensity={2.0} castShadow />
+                    {/* Indigo rim from the left */}
+                    <pointLight position={[-4, 2, 4]} color="#6366f1" intensity={5} />
+                    {/* Cyan accent from lower-right for contrast */}
+                    <pointLight position={[4, -3, 2]} color="#22d3ee" intensity={1.5} />
                     <Environment preset="city" />
                     <Suspense fallback={<ModelFallback />}>
                         <AstronautModel />

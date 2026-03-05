@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useLayoutEffect } from 'react'
 import { motion, useInView, useScroll } from 'framer-motion'
 
 const ITEM_HEIGHT = 110
@@ -90,6 +90,38 @@ export default function Experience() {
     }, [scrollYProgress])
 
     const item = EXPERIENCE[selectedIndex]
+
+    // ── Measure actual card heights so the stack centres correctly ──────────
+    const CARD_GAP = 0
+    const CONTAINER_CENTER = 190 // half of the 380px viewport
+    const cardRefs = useRef<(HTMLDivElement | null)[]>([])
+    const [cardHeights, setCardHeights] = useState<number[]>([])
+
+    useLayoutEffect(() => {
+        const measure = () =>
+            setCardHeights(cardRefs.current.map(el => el?.offsetHeight ?? 0))
+        measure()
+        const ro = new ResizeObserver(measure)
+        cardRefs.current.forEach(el => el && ro.observe(el))
+        return () => ro.disconnect()
+    }, [])
+
+    // Cumulative top-offset of each card in the natural flow column
+    const cumOffsets: number[] = []
+    for (let i = 0; i < EXPERIENCE.length; i++) {
+        cumOffsets.push(i === 0 ? 0 : (cumOffsets[i - 1] ?? 0) + (cardHeights[i - 1] ?? 0) + CARD_GAP)
+    }
+    const measured = cardHeights.some(h => h > 0)
+
+    // Smoothly interpolate the center point of the "active" card (drumPos is fractional)
+    const floorIdx = Math.floor(drumPos)
+    const ceilIdx = Math.min(Math.ceil(drumPos), EXPERIENCE.length - 1)
+    const frac = drumPos - floorIdx
+    const centerOf = (idx: number) => (cumOffsets[idx] ?? 0) + (cardHeights[idx] ?? 0) / 2
+    const activeCenter = measured
+        ? centerOf(floorIdx) + frac * (centerOf(ceilIdx) - centerOf(floorIdx))
+        : floorIdx * 300
+    const stackTranslateY = measured ? CONTAINER_CENTER - activeCenter : 0
 
     return (
         // Outer element carries the section id for the navbar observer
@@ -347,7 +379,7 @@ export default function Experience() {
                                 </div>
                             </div>
 
-                            {/* ── Detail panel — true drum-roll cylinder ── */}
+                            {/* ── Detail panel — stacked cards, centred on active ── */}
                             <div style={{
                                 position: 'relative',
                                 height: '380px',
@@ -355,106 +387,108 @@ export default function Experience() {
                                 perspectiveOrigin: '50% 50%',
                                 overflow: 'hidden',
                             }}>
-                                {/* Top/bottom fades to sell the cylinder illusion */}
+                                {/* Top/bottom fades */}
                                 <div style={{
                                     position: 'absolute', inset: 0,
                                     background: 'linear-gradient(to bottom, rgba(7,7,15,0.92) 0%, transparent 18%, transparent 82%, rgba(7,7,15,0.92) 100%)',
                                     pointerEvents: 'none', zIndex: 10,
                                 }} />
-                                {EXPERIENCE.map((exp, i) => {
-                                    const dist = i - drumPos
-                                    const absDist = Math.abs(dist)
-                                    // STEP = container height so each card occupies exactly one slot
-                                    const SLOT = 300
-                                    const TILT = 32  // degrees per slot — strong tilt sells the cylinder
-                                    const translateY = dist * SLOT
-                                    const rotateX = dist * -TILT
-                                    const opacity = Math.max(0, 1 - absDist * 0.55)
-                                    const scale = Math.max(0.82, 1 - absDist * 0.08)
-                                    const isActive = i === selectedIndex
+                                {/* Whole stack slides so active card is always centred */}
+                                <div style={{
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    gap: `${CARD_GAP}px`,
+                                    transform: `translateY(${stackTranslateY}px)`,
+                                    willChange: 'transform',
+                                }}>
+                                    {EXPERIENCE.map((exp, i) => {
+                                        // Pixel distance from this card's centre to the active centre
+                                        const cardCenter = (cumOffsets[i] ?? 0) + (cardHeights[i] ?? 0) / 2
+                                        const pixelDist = measured ? (cardCenter - activeCenter) : ((i - drumPos) * 300)
+                                        const norm = pixelDist / 300
+                                        const rotateX = pixelDist * -0.107 // ~32deg per 300px
+                                        const opacity = Math.max(0, 1 - Math.abs(norm) * 0.55)
+                                        const scale = Math.max(0.82, 1 - Math.abs(norm) * 0.08)
+                                        const isActive = i === selectedIndex
 
-                                    return (
-                                        <div
-                                            key={exp.company}
-                                            style={{
-                                                position: 'absolute',
-                                                top: 0, left: 0, right: 0,
-                                                height: '100%',
-                                                display: 'flex',
-                                                alignItems: 'center',
-                                                transform: `translateY(${translateY}px) rotateX(${rotateX}deg) scale(${scale})`,
-                                                transformStyle: 'preserve-3d',
-                                                transformOrigin: 'center center',
-                                                opacity,
-                                                willChange: 'transform, opacity',
-                                                pointerEvents: isActive ? 'auto' : 'none',
-                                            }}
-                                        >
-                                            <div style={{
-                                                width: '100%',
-                                                padding: '28px 32px',
-                                                background: isActive
-                                                    ? 'rgba(13, 13, 31, 0.85)'
-                                                    : 'rgba(13, 13, 31, 0.5)',
-                                                backdropFilter: 'blur(12px)',
-                                                border: `1px solid ${exp.color}${isActive ? '40' : '18'}`,
-                                                borderRadius: '20px',
-                                                boxShadow: isActive ? `0 0 48px ${exp.color}15` : 'none',
-                                                transition: 'border-color 0.4s, background 0.4s, box-shadow 0.4s',
-                                            }}>
+                                        return (
+                                            <div
+                                                ref={el => { cardRefs.current[i] = el }}
+                                                key={exp.company}
+                                                style={{
+                                                    transform: `rotateX(${rotateX}deg) scale(${scale})`,
+                                                    transformStyle: 'preserve-3d',
+                                                    transformOrigin: 'center center',
+                                                    opacity,
+                                                    willChange: 'transform, opacity',
+                                                    pointerEvents: isActive ? 'auto' : 'none',
+                                                }}
+                                            >
                                                 <div style={{
-                                                    display: 'flex',
-                                                    justifyContent: 'space-between',
-                                                    alignItems: 'flex-start',
-                                                    flexWrap: 'wrap',
-                                                    gap: '10px',
-                                                    marginBottom: '16px',
+                                                    padding: '28px 32px',
+                                                    background: isActive
+                                                        ? 'rgba(13, 13, 31, 0.85)'
+                                                        : 'rgba(13, 13, 31, 0.5)',
+                                                    backdropFilter: 'blur(12px)',
+                                                    border: `1px solid ${exp.color}${isActive ? '40' : '18'}`,
+                                                    borderRadius: '20px',
+                                                    boxShadow: isActive ? `0 0 48px ${exp.color}15` : 'none',
+                                                    transition: 'border-color 0.4s, background 0.4s, box-shadow 0.4s',
                                                 }}>
-                                                    <div>
-                                                        <h3 style={{ fontSize: '1.05rem', fontWeight: 700, color: '#f1f5f9', marginBottom: '5px' }}>
-                                                            {exp.role}
-                                                        </h3>
-                                                        <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' }}>
-                                                            <span style={{ color: exp.color, fontWeight: 700, fontSize: '0.88rem' }}>{exp.company}</span>
-                                                            <span style={{ color: '#334155' }}>·</span>
-                                                            <span style={{ color: '#475569', fontSize: '0.78rem' }}>{exp.type}</span>
-                                                        </div>
-                                                    </div>
-                                                    <span style={{
-                                                        padding: '4px 12px',
-                                                        background: `${exp.color}15`,
-                                                        border: `1px solid ${exp.color}35`,
-                                                        borderRadius: '100px',
-                                                        fontSize: '0.72rem',
-                                                        color: exp.color,
-                                                        fontWeight: 600,
-                                                        whiteSpace: 'nowrap',
+                                                    <div style={{
+                                                        display: 'flex',
+                                                        justifyContent: 'space-between',
+                                                        alignItems: 'flex-start',
+                                                        flexWrap: 'wrap',
+                                                        gap: '10px',
+                                                        marginBottom: '16px',
                                                     }}>
-                                                        {exp.period}
-                                                    </span>
+                                                        <div>
+                                                            <h3 style={{ fontSize: '1.05rem', fontWeight: 700, color: '#f1f5f9', marginBottom: '5px' }}>
+                                                                {exp.role}
+                                                            </h3>
+                                                            <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' }}>
+                                                                <span style={{ color: exp.color, fontWeight: 700, fontSize: '0.88rem' }}>{exp.company}</span>
+                                                                <span style={{ color: '#334155' }}>·</span>
+                                                                <span style={{ color: '#475569', fontSize: '0.78rem' }}>{exp.type}</span>
+                                                            </div>
+                                                        </div>
+                                                        <span style={{
+                                                            padding: '4px 12px',
+                                                            background: `${exp.color}15`,
+                                                            border: `1px solid ${exp.color}35`,
+                                                            borderRadius: '100px',
+                                                            fontSize: '0.72rem',
+                                                            color: exp.color,
+                                                            fontWeight: 600,
+                                                            whiteSpace: 'nowrap',
+                                                        }}>
+                                                            {exp.period}
+                                                        </span>
+                                                    </div>
+
+                                                    <div style={{
+                                                        height: '1px',
+                                                        background: `linear-gradient(to right, ${exp.color}35, transparent)`,
+                                                        marginBottom: '14px',
+                                                    }} />
+
+                                                    <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                                                        {exp.bullets.map((bullet, bi) => (
+                                                            <li
+                                                                key={bi}
+                                                                style={{ display: 'flex', gap: '9px', fontSize: '0.82rem', color: isActive ? '#94a3b8' : '#475569', lineHeight: 1.6, transition: 'color 0.4s' }}
+                                                            >
+                                                                <span style={{ color: exp.color, flexShrink: 0, marginTop: '3px', opacity: isActive ? 1 : 0.4 }}>▸</span>
+                                                                {bullet}
+                                                            </li>
+                                                        ))}
+                                                    </ul>
                                                 </div>
-
-                                                <div style={{
-                                                    height: '1px',
-                                                    background: `linear-gradient(to right, ${exp.color}35, transparent)`,
-                                                    marginBottom: '14px',
-                                                }} />
-
-                                                <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                                                    {exp.bullets.map((bullet, bi) => (
-                                                        <li
-                                                            key={bi}
-                                                            style={{ display: 'flex', gap: '9px', fontSize: '0.82rem', color: isActive ? '#94a3b8' : '#475569', lineHeight: 1.6, transition: 'color 0.4s' }}
-                                                        >
-                                                            <span style={{ color: exp.color, flexShrink: 0, marginTop: '3px', opacity: isActive ? 1 : 0.4 }}>▸</span>
-                                                            {bullet}
-                                                        </li>
-                                                    ))}
-                                                </ul>
                                             </div>
-                                        </div>
-                                    )
-                                })}
+                                        )
+                                    })}
+                                </div>
                             </div>
                         </motion.div>
 
