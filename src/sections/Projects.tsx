@@ -1,4 +1,5 @@
-import { useState, useRef, ReactNode } from 'react'
+import { useState, useRef } from 'react'
+import type { ReactNode } from 'react'
 import { motion, useInView, AnimatePresence } from 'framer-motion'
 import { FiGithub, FiExternalLink } from 'react-icons/fi'
 import { SiGoogleplay, SiAppstore } from 'react-icons/si'
