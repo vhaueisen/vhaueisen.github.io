@@ -10,17 +10,17 @@ export const STATS: StatItem[] = [
 ]
 
 export const BIO_PARAGRAPHS: string[] = [
-    'Senior Mobile Engineer with 7+ years designing scalable cross-platform architectures using React Native and Expo. Specialized in mobile modernization, white-label platforms, CI/CD automation, and brownfield native integrations.',
-    "Former game developer bringing strong expertise in performance optimization, real-time systems, and polished interactive user experiences. I've shipped products for Nestlé, Coca-Cola, and Vale S.A.",
-    'Based in Vitória, Brazil, overlapping US time zones. Fully remote-ready and actively pursuing US-based opportunities.',
+    'Senior Mobile Engineer with 7+ years designing scalable cross-platform architectures using React Native and Expo. Specialized in mobile modernization, white-label platforms, CI/CD automation, and brownfield native integrations with Swift and Kotlin.',
+    "Proven track record leading React Native version upgrades, Expo workflow migrations, and Fastlane build automation initiatives that improve release reliability and reduce operational overhead. Former game developer with deep expertise in performance optimization, real-time systems, and polished interactive experiences.",
+    "Shipped products for Nestlé, Coca-Cola, Vale S.A., Palmeiras, and SporTV.",
+    'Across 20+ public projects, shipped 7 mobile cross platform apps, spanning AR training tools, educational games, and production-grade React Native apps on both stores. Also built branded interactive worlds on Roblox and ZEPETO, and 3D web experiences with Three.js and WebAR.',
 ]
 
 export const ENTERPRISE_CLIENTS: string[] = [
     'Nestlé',
-    'Coca-Cola',
     'Vale S.A.',
     'Palmeiras',
-    'SporTV',
+    'Sportv',
     'LOUD',
 ]
 

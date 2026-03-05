@@ -84,6 +84,21 @@ export interface SkillGroup {
     skills: Skill[]
 }
 
+// ─── Writing ─────────────────────────────────────────────────────────────────
+
+export interface ArticleItem {
+    id: string
+    title: string
+    publication: string
+    publicationUrl: string
+    date: string
+    description: string
+    href: string
+    /** Branded CSS color — must use COLORS.* or css() helper. */
+    color: CSSColor
+    tags: string[]
+}
+
 // ─── Contact ─────────────────────────────────────────────────────────────────
 
 export interface ContactLink {

@@ -279,7 +279,7 @@ export const PROJECTS: ProjectItem[] = [
         name: 'Sportv Land',
         icon: icons.sportvland,
         description:
-            'Immersive branded Roblox world for SporTV. Features mini-games, a football arena, stadium backstage studio, Ferris wheel, and collectible themed items.',
+            'Immersive branded Roblox world for Sportv. Features mini-games, a football arena, stadium backstage studio, Ferris wheel, and collectible themed items.',
         categories: ['3D / AR', 'Games'] as Exclude<ProjectCategory, 'All'>[],
         tags: ['Roblox', 'Luau', 'Branded', 'PvP'],
         link: 'https://www.roblox.com/games/11512530631/SportvLand',

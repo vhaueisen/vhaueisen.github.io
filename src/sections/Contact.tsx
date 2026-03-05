@@ -123,8 +123,8 @@ export default function Contact() {
 
                     <AnimatedEntrance delay={0.2} inView={inView}>
                         <p style={{ ...bodyText, marginBottom: '40px', maxWidth: '420px' }}>
-                            I&#39;m open to senior mobile engineering roles and remote positions with US-based
-                            teams. Reach out — I&#39;m quick to respond.
+                            Always happy to connect with people building interesting things. Whether it&#39;s a
+                            collaboration, a question, or just a good conversation. My inbox is open.
                         </p>
                     </AnimatedEntrance>
 

@@ -53,13 +53,24 @@ export const EXPERIENCE: ExperienceItem[] = [
         ],
     },
     {
+        role: 'Web Developer',
+        company: 'Vale S.A.',
+        period: 'Aug 2021 – Apr 2022',
+        type: 'Remote',
+        color: COLORS.indigo,
+        bullets: [
+            'Built a web platform for training management using modern JavaScript frameworks.',
+            'Implemented dashboards, video integration, and interactive user flows.',
+        ],
+    },
+    {
         role: 'Mobile Developer Intern',
         company: 'Vale S.A.',
         period: 'Oct 2019 – Aug 2021',
         type: 'Vitória, Brazil',
         color: COLORS.indigo,
         bullets: [
-            'Developed and deployed Vale RA — a gamified AR mobile training app for field maintenance.',
+            'Developed and deployed Vale RA, a gamified AR mobile training app for field maintenance.',
             'Built GC Digital, a web learning platform with dynamic content features.',
         ],
     },
