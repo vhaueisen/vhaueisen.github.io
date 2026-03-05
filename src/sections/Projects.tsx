@@ -249,8 +249,8 @@ export default function Projects() {
 
       {/* Filter tabs */}
       <AnimatedEntrance delay={0.3} inView={inView}>
-        <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '40px' }}>
-          {TABS.map((tab) => (
+        <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', margin: '24px 0' }}>
+          {PROJECT_TABS.map((tab) => (
             <FilterTab
               key={tab}
               label={tab}

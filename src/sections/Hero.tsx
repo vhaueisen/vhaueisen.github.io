@@ -43,7 +43,7 @@ export default function Hero() {
       }}
     >
       {/* Left: text content */}
-      <div style={{ flex: '0 0 55%', zIndex: 10 }}>
+      <div className="hero-text" style={{ zIndex: 10 }}>
         {/* Status badge */}
         <AnimatedEntrance delay={0.2} yOffset={0}>
           <div
@@ -207,6 +207,10 @@ export default function Hero() {
       </motion.div>
 
       <style>{`
+                .hero-text { flex: 0 0 55%; }
+                @media (max-width: 899px) {
+                    .hero-text { flex: 1 1 100%; }
+                }
                 @media (min-width: 900px) {
                     .hero-canvas-wrapper { display: block !important; }
                 }

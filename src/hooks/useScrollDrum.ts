@@ -1,5 +1,6 @@
-import { useScroll } from 'framer-motion'
+import { useScroll, useTransform } from 'framer-motion'
 import { useState, useRef, useEffect } from 'react'
+import type { MotionValue } from 'framer-motion'
 
 /** Height (px) of one timeline item row in the Experience drum UI. */
 export const ITEM_HEIGHT = 110
@@ -7,17 +8,19 @@ export const ITEM_HEIGHT = 110
 export const SCROLL_PER_ITEM = 320
 
 interface ScrollDrumState<T extends Element> {
-  /** Ref to attach to the outer tall scroll-track container. */
-  scrollTrackRef: React.RefObject<T | null>
-  /**
-   * Fractional position in the list (e.g. 1.7 = between item 1 and 2).
-   * Used to compute perspective-tilt offsets.
-   */
-  drumPos: number
-  /** Rounded index — the currently "active" list item. */
-  selectedIndex: number
-  /** Total number of items (passed in so the hook can clamp correctly). */
-  itemCount: number
+    /** Ref to attach to the outer tall scroll-track container. */
+    scrollTrackRef: React.RefObject<T | null>
+    /**
+     * Fractional position in the list (e.g. 1.7 = between item 1 and 2).
+     * Used to compute perspective-tilt offsets.
+     */
+    drumPos: number
+    /** Raw MotionValue version of drumPos — updates every frame, bypasses React state. */
+    drumPosValue: MotionValue<number>
+    /** Rounded index — the currently "active" list item. */
+    selectedIndex: number
+    /** Total number of items (passed in so the hook can clamp correctly). */
+    itemCount: number
 }
 
 /**
@@ -30,24 +33,27 @@ interface ScrollDrumState<T extends Element> {
  * @param itemCount - Number of items in the list being scrolled through.
  */
 export function useScrollDrum<T extends HTMLElement = HTMLDivElement>(
-  itemCount: number
+    itemCount: number
 ): ScrollDrumState<T> {
-  const scrollTrackRef = useRef<T>(null)
-  const [selectedIndex, setSelectedIndex] = useState(0)
-  const [drumPos, setDrumPos] = useState(0)
+    const scrollTrackRef = useRef<T>(null)
+    const [selectedIndex, setSelectedIndex] = useState(0)
+    const [drumPos, setDrumPos] = useState(0)
 
-  const { scrollYProgress } = useScroll({
-    target: scrollTrackRef as React.RefObject<HTMLElement>,
-    offset: ['start start', 'end end'],
-  })
-
-  useEffect(() => {
-    return scrollYProgress.on('change', (v) => {
-      const pos = Math.max(0, Math.min(itemCount - 1, v * (itemCount - 1)))
-      setDrumPos(pos)
-      setSelectedIndex(Math.round(pos))
+    const { scrollYProgress } = useScroll({
+        target: scrollTrackRef as React.RefObject<HTMLElement>,
+        offset: ['start start', 'end end'],
     })
-  }, [scrollYProgress, itemCount])
 
-  return { scrollTrackRef, selectedIndex, drumPos, itemCount }
+    // MotionValue version — updates every rAF frame, no React re-render cost
+    const drumPosValue = useTransform(scrollYProgress, [0, 1], [0, itemCount - 1])
+
+    useEffect(() => {
+        return scrollYProgress.on('change', (v) => {
+            const pos = Math.max(0, Math.min(itemCount - 1, v * (itemCount - 1)))
+            setDrumPos(pos)
+            setSelectedIndex(Math.round(pos))
+        })
+    }, [scrollYProgress, itemCount])
+
+    return { scrollTrackRef, selectedIndex, drumPos, drumPosValue, itemCount }
 }

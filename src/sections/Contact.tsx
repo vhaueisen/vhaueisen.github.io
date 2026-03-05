@@ -91,7 +91,8 @@ export default function Contact() {
   return (
     <section
       id="contact"
-      style={{ padding: '100px 24px 140px', maxWidth: '1280px', margin: '0 auto' }}
+      className="contact-section"
+      style={{ maxWidth: '1280px', margin: '0 auto' }}
     >
       <div
         ref={sectionRef}
@@ -167,12 +168,12 @@ export default function Contact() {
 
       {/* Footer note */}
       <motion.div
+        className="contact-footer-note"
         initial={{ opacity: 0 }}
         animate={inView ? { opacity: 1 } : {}}
         transition={{ duration: 0.5, delay: 0.8 }}
         style={{
           textAlign: 'center',
-          marginTop: '80px',
           paddingTop: '40px',
           borderTop: '1px solid rgba(99,102,241,0.1)',
           color: COLORS.slate700,
@@ -181,6 +182,15 @@ export default function Contact() {
       >
         Built with React · Three.js · Framer Motion · 2026
       </motion.div>
+
+      <style>{`
+        .contact-section { padding: 100px 24px 140px; }
+        .contact-footer-note { margin-top: 80px; }
+        @media (max-width: 768px) {
+          .contact-section { padding: 60px 24px 60px; }
+          .contact-footer-note { margin-top: 40px; }
+        }
+      `}</style>
     </section>
   )
 }

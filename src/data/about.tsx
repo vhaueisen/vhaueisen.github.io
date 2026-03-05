@@ -1,6 +1,6 @@
 import { SiGoogleplay, SiAppstore } from 'react-icons/si'
-import type { StatItem, StoreLink } from '../types'
 import { COLORS } from '../constants/colors'
+import type { StatItem, StoreLink } from '../types'
 
 export const STATS: StatItem[] = [
   { value: '7+', label: 'Years Experience' },
