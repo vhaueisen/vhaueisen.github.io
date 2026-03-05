@@ -55,6 +55,19 @@ export const PROJECTS: ProjectItem[] = [
         color: '#6366f1',
     },
     {
+        id: 'bulli',
+        name: 'Build-Your-Bulli',
+        icon: icons.bulli,
+        description:
+            'Interactive 3D browser configurator for VW T1 camper vans. Real-time model swapping, live WebGL previews, PDF export, and email delivery via Node.js.',
+        categories: ['3D / AR', 'Web'] as Exclude<ProjectCategory, 'All'>[],
+        tags: ['React', 'Three.js', 'Node.js', 'jsPDF', 'Webpack'],
+        github: 'https://github.com/vhaueisen/build-your-bulli',
+        link: 'https://vhaueisen.github.io/build-your-bulli',
+        featured: true,
+        color: '#a855f7',
+    },
+    {
         id: 'vale-ra',
         name: 'Vale RA',
         icon: icons.vale,
@@ -65,18 +78,6 @@ export const PROJECTS: ProjectItem[] = [
         github: 'https://github.com/vhaueisen/vale-ra',
         featured: true,
         color: '#22d3ee',
-    },
-    {
-        id: 'bulli',
-        name: 'Build-Your-Bulli',
-        icon: icons.bulli,
-        description:
-            'Interactive 3D browser configurator for VW T1 camper vans. Real-time model swapping, live WebGL previews, PDF export, and email delivery via Node.js.',
-        categories: ['3D / AR', 'Web'] as Exclude<ProjectCategory, 'All'>[],
-        tags: ['React', 'Three.js', 'Node.js', 'jsPDF', 'Webpack'],
-        github: 'https://github.com/vhaueisen/build-your-bulli',
-        featured: true,
-        color: '#a855f7',
     },
     {
         id: 'realink',
