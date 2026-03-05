@@ -1,7 +1,8 @@
 import { Float } from '@react-three/drei'
 import { useFrame } from '@react-three/fiber'
-import { useRef } from 'react'
-import type * as THREE from 'three'
+import { useRef, useMemo, useEffect } from 'react'
+import * as THREE from 'three'
+import { COLORS } from '../../constants/colors'
 
 /**
  * The animated wireframe icosahedron used in the Contact section.
@@ -9,6 +10,22 @@ import type * as THREE from 'three'
  */
 export function WireframeSphere() {
     const meshRef = useRef<THREE.Mesh | null>(null)
+
+    const geometry = useMemo(() => new THREE.IcosahedronGeometry(1.5, 1), [])
+    const material = useMemo(
+        () =>
+            new THREE.MeshStandardMaterial({
+                color: COLORS.indigo,
+                wireframe: true,
+                emissive: new THREE.Color(COLORS.indigo),
+                emissiveIntensity: 0.5,
+                transparent: true,
+                opacity: 0.4,
+            }),
+        []
+    )
+
+    useEffect(() => () => { geometry.dispose(); material.dispose() }, [geometry, material])
 
     useFrame((_, delta) => {
         if (meshRef.current) {
@@ -19,17 +36,7 @@ export function WireframeSphere() {
 
     return (
         <Float speed={1.5} rotationIntensity={0.3} floatIntensity={0.5}>
-            <mesh ref={meshRef}>
-                <icosahedronGeometry args={[1.5, 1]} />
-                <meshStandardMaterial
-                    color="#6366f1"
-                    wireframe
-                    emissive="#6366f1"
-                    emissiveIntensity={0.5}
-                    transparent
-                    opacity={0.4}
-                />
-            </mesh>
+            <mesh ref={meshRef} geometry={geometry} material={material} />
         </Float>
     )
 }

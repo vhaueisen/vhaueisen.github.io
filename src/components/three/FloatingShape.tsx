@@ -1,15 +1,15 @@
 import { useFrame } from '@react-three/fiber'
-import { useRef, useMemo } from 'react'
-import type * as THREE from 'three'
+import { useRef, useMemo, useEffect } from 'react'
+import * as THREE from 'three'
 
 type GeometryType = 'icosahedron' | 'octahedron' | 'torus' | 'tetrahedron'
 
 interface FloatingShapeProps {
-  position: [number, number, number]
-  rotation: [number, number, number]
-  geometry: GeometryType
-  color: string
-  speed: number
+    position: [number, number, number]
+    rotation: [number, number, number]
+    geometry: GeometryType
+    color: string
+    speed: number
 }
 
 /**
@@ -18,31 +18,44 @@ interface FloatingShapeProps {
  * individual Three.js geometry types.
  */
 export function FloatingShape({ position, rotation, geometry, color, speed }: FloatingShapeProps) {
-  const meshRef = useRef<THREE.Mesh>(null!)
-  // Memoize the initial rotation so it isn't recalculated on every render
-  const initialRotation = useMemo(() => rotation, [rotation])
+    const meshRef = useRef<THREE.Mesh | null>(null)
+    // Capture initial rotation once on mount — useRef gives a stable value
+    // that never triggers re-renders, unlike the pointless useMemo pattern.
+    const initialRotation = useRef<[number, number, number]>(rotation)
 
-  useFrame((_, delta) => {
-    if (meshRef.current) {
-      meshRef.current.rotation.x += delta * speed * 0.3
-      meshRef.current.rotation.y += delta * speed * 0.5
-    }
-  })
+    const geo = useMemo(() => {
+        switch (geometry) {
+            case 'icosahedron': return new THREE.IcosahedronGeometry(1, 0)
+            case 'octahedron': return new THREE.OctahedronGeometry(1)
+            case 'torus': return new THREE.TorusGeometry(1, 0.3, 8, 16)
+            case 'tetrahedron': return new THREE.TetrahedronGeometry(1)
+        }
+    }, [geometry])
 
-  return (
-    <mesh ref={meshRef} position={position} rotation={initialRotation}>
-      {geometry === 'icosahedron' && <icosahedronGeometry args={[1, 0]} />}
-      {geometry === 'octahedron' && <octahedronGeometry args={[1]} />}
-      {geometry === 'torus' && <torusGeometry args={[1, 0.3, 8, 16]} />}
-      {geometry === 'tetrahedron' && <tetrahedronGeometry args={[1]} />}
-      <meshStandardMaterial
-        color={color}
-        wireframe
-        transparent
-        opacity={0.25}
-        emissive={color}
-        emissiveIntensity={0.4}
-      />
-    </mesh>
-  )
+    const mat = useMemo(
+        () =>
+            new THREE.MeshStandardMaterial({
+                color,
+                wireframe: true,
+                transparent: true,
+                opacity: 0.25,
+                emissive: new THREE.Color(color),
+                emissiveIntensity: 0.4,
+            }),
+        [color]
+    )
+
+    // Dispose Three.js objects when the component unmounts or deps change
+    useEffect(() => () => { geo.dispose(); mat.dispose() }, [geo, mat])
+
+    useFrame((_, delta) => {
+        if (meshRef.current) {
+            meshRef.current.rotation.x += delta * speed * 0.3
+            meshRef.current.rotation.y += delta * speed * 0.5
+        }
+    })
+
+    return (
+        <mesh ref={meshRef} position={position} rotation={initialRotation.current} geometry={geo} material={mat} />
+    )
 }

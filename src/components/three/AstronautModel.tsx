@@ -1,7 +1,8 @@
 import { Float, useGLTF, useAnimations } from '@react-three/drei'
 import { useFrame } from '@react-three/fiber'
-import { useEffect, useRef } from 'react'
-import type * as THREE from 'three'
+import { useEffect, useMemo, useRef } from 'react'
+import * as THREE from 'three'
+import { COLORS } from '../../constants/colors'
 
 const ASTRONAUT_URL = 'https://modelviewer.dev/shared-assets/models/Astronaut.glb'
 
@@ -46,14 +47,17 @@ export function AstronautModel() {
 export function ModelFallback() {
     const meshRef = useRef<THREE.Mesh | null>(null)
 
+    const geometry = useMemo(() => new THREE.OctahedronGeometry(1, 0), [])
+    const material = useMemo(
+        () => new THREE.MeshStandardMaterial({ color: COLORS.indigo, wireframe: true }),
+        []
+    )
+
+    useEffect(() => () => { geometry.dispose(); material.dispose() }, [geometry, material])
+
     useFrame((_, delta) => {
         if (meshRef.current) meshRef.current.rotation.y += delta * 0.6
     })
 
-    return (
-        <mesh ref={meshRef}>
-            <octahedronGeometry args={[1, 0]} />
-            <meshStandardMaterial color="#6366f1" wireframe />
-        </mesh>
-    )
+    return <mesh ref={meshRef} geometry={geometry} material={material} />
 }

@@ -6,7 +6,14 @@ import { COLORS } from '../constants/colors'
 import { EXPERIENCE } from '../data/experience'
 import { useScrollDrum, ITEM_HEIGHT, SCROLL_PER_ITEM } from '../hooks/useScrollDrum'
 import { useSectionInView } from '../hooks/useSectionInView'
+import { periodBadge } from '../styles'
 import type { ExperienceItem } from '../types'
+
+// ─── Module-level layout constants ───────────────────────────────────────────
+/** Degrees of perspective rotation per list position in the drum-roll panel. */
+const DRUM_TILT = 32
+/** Gap (px) between stacked cards in the drum panel. */
+const DRUM_GAP = 0
 
 // ─── Timeline column ──────────────────────────────────────────────────────────
 
@@ -149,9 +156,8 @@ interface DetailDrumProps {
 }
 
 function DetailDrum({ items, selectedIndex, drumPos }: DetailDrumProps) {
-    const TILT = 32
-    // 2em gap between stacked cards (assuming 16 px root font size)
-    const GAP = 0
+    const TILT = DRUM_TILT
+    const GAP = DRUM_GAP
 
     const cardRefs = useRef<(HTMLDivElement | null)[]>([])
     const [heights, setHeights] = useState<number[]>(() => new Array(items.length).fill(220))
@@ -284,18 +290,7 @@ function DetailDrum({ items, selectedIndex, drumPos }: DetailDrumProps) {
                                         <span style={{ color: COLORS.slate600, fontSize: '0.78rem' }}>{exp.type}</span>
                                     </div>
                                 </div>
-                                <span
-                                    style={{
-                                        padding: '4px 12px',
-                                        background: `${exp.color}15`,
-                                        border: `1px solid ${exp.color}35`,
-                                        borderRadius: '100px',
-                                        fontSize: '0.72rem',
-                                        color: exp.color,
-                                        fontWeight: 600,
-                                        whiteSpace: 'nowrap',
-                                    }}
-                                >
+                                <span style={periodBadge(exp.color)}>
                                     {exp.period}
                                 </span>
                             </div>
@@ -518,23 +513,6 @@ export default function Experience() {
                             <DetailDrum items={EXPERIENCE} selectedIndex={selectedIndex} drumPos={drumPos} />
                         </motion.div>
                     </div>
-
-                    <style>{`
-            .experience-layout {
-              grid-template-columns: minmax(220px, 300px) 1fr;
-              gap: 48px;
-            }
-            .experience-timeline-horizontal { display: none; }
-            @media (max-width: 899px) {
-              .experience-content { gap: 24px !important; }
-              .experience-layout {
-                grid-template-columns: 1fr !important;
-                gap: 20px !important;
-              }
-              .experience-timeline-vertical { display: none; }
-              .experience-timeline-horizontal { display: block; }
-            }
-          `}</style>
                 </div>
             </div>
         </section>

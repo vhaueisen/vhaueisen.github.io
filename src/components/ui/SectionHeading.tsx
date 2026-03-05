@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion'
 import type { ReactNode, CSSProperties } from 'react'
+import { COLORS } from '../../constants/colors'
 import { sectionLabel, sectionTitle } from '../../styles'
 
 interface SectionHeadingProps {
@@ -53,7 +54,8 @@ export function SectionHeading({
                     initial={{ opacity: 0, y: 16 }}
                     animate={inView ? { opacity: 1, y: 0 } : {}}
                     transition={{ duration: 0.5, delay: 0.2 }}
-                    className="text-[#64748b] text-[0.95rem] mt-4"
+                    className="mt-4"
+                    style={{ color: COLORS.textMuted, fontSize: '0.95rem' }}
                 >
                     {subtitle}
                 </motion.p>

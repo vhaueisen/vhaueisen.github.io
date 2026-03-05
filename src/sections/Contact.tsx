@@ -7,7 +7,7 @@ import { SectionHeading, AnimatedEntrance } from '../components/ui'
 import { COLORS } from '../constants/colors'
 import { CONTACT_LINKS } from '../data/contact'
 import { useSectionInView } from '../hooks/useSectionInView'
-import { gradientTextShort } from '../styles'
+import { glassCard, iconBox, gradientTextShort } from '../styles'
 import type { ContactLink } from '../types'
 
 // ─── Single contact link row ──────────────────────────────────────────────────
@@ -30,34 +30,19 @@ function ContactRow({
             animate={inView ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.4, delay: 0.3 + index * 0.1 }}
             style={{
+                ...glassCard,
+                borderRadius: '12px',
                 display: 'flex',
                 alignItems: 'center',
                 gap: '16px',
                 padding: '16px 20px',
-                background: 'rgba(13,13,31,0.7)',
-                backdropFilter: 'blur(12px)',
-                border: '1px solid rgba(99,102,241,0.12)',
-                borderRadius: '12px',
                 textDecoration: 'none',
                 transition: 'all 0.3s',
             }}
             whileHover={{ borderColor: `${link.color}50`, x: 4, boxShadow: `0 4px 20px ${link.color}15` }}
         >
             {/* Icon badge */}
-            <span
-                style={{
-                    width: '40px',
-                    height: '40px',
-                    borderRadius: '10px',
-                    flexShrink: 0,
-                    background: `${link.color}15`,
-                    border: `1px solid ${link.color}25`,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    color: link.color,
-                }}
-            >
+            <span style={iconBox(link.color)}>
                 {link.icon}
             </span>
 
@@ -182,15 +167,6 @@ export default function Contact() {
             >
                 Built with React · Three.js · Framer Motion · 2026
             </motion.div>
-
-            <style>{`
-        .contact-section { padding: 100px 24px 140px; }
-        .contact-footer-note { margin-top: 80px; }
-        @media (max-width: 768px) {
-          .contact-section { padding: 60px 24px 60px; }
-          .contact-footer-note { margin-top: 40px; }
-        }
-      `}</style>
         </section>
     )
 }

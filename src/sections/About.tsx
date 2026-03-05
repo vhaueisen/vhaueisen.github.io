@@ -7,12 +7,9 @@ import { gradientText, gradientTextShort } from '../styles'
 import type { StatItem } from '../types'
 
 
-function StatCard({ value, label, index }: StatItem & { index: number }) {
-    const [ref, inView] = useSectionInView<HTMLDivElement>('-60px')
-
+function StatCard({ value, label, index, inView }: StatItem & { index: number; inView: boolean }) {
     return (
         <motion.div
-            ref={ref}
             initial={{ opacity: 0, y: 30 }}
             animate={inView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.5, delay: index * 0.1 }}
@@ -88,13 +85,12 @@ export default function About() {
 
                     {/* Stats + cards — right column */}
                     <div>
-                        <AnimatedEntrance delay={0.2} inView={inView}>
-                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', marginBottom: '32px' }}>
-                                {STATS.map((stat, i) => (
-                                    <StatCard key={stat.label} {...stat} index={i} />
-                                ))}
-                            </div>
-                        </AnimatedEntrance>
+                        {/* Stats */}
+                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', marginBottom: '32px' }}>
+                            {STATS.map((stat, i) => (
+                                <StatCard key={stat.label} {...stat} index={i} inView={inView} />
+                            ))}
+                        </div>
 
                         {/* Enterprise Clients */}
                         <AnimatedEntrance delay={0.5} inView={inView}>
