@@ -1,4 +1,5 @@
 import { TbStethoscope, TbAugmentedReality, TbCube, TbBus, TbRocket, TbLink } from 'react-icons/tb'
+import { COLORS } from '../constants/colors'
 import type { ProjectItem, ProjectCategory } from '../types'
 import type { ReactNode } from 'react'
 
@@ -27,7 +28,7 @@ export const PROJECTS: ProjectItem[] = [
     playStore: 'https://play.google.com/store/apps/details?id=com.medfinance.plantao360',
     appStore: 'https://apps.apple.com/br/app/plant%C3%A3o-360/id6748095218',
     featured: true,
-    color: '#6366f1',
+    color: COLORS.indigo,
   },
   {
     id: 'nestle-surpresa',
@@ -39,7 +40,7 @@ export const PROJECTS: ProjectItem[] = [
     tags: ['Web AR', 'React', 'Three.js', 'Nestlé', 'Roblox'],
     link: 'https://amostras.euqueronestle.com.br/sites/chocolates/surpresa-ra/',
     featured: true,
-    color: '#22d3ee',
+    color: COLORS.cyan,
   },
   {
     id: 'rogueunit',
@@ -52,7 +53,7 @@ export const PROJECTS: ProjectItem[] = [
     github: 'https://github.com/vhaueisen/rogueunit-gg',
     link: 'https://vhaueisen.github.io/rogueunit-gg',
     featured: true,
-    color: '#6366f1',
+    color: COLORS.indigo,
   },
   {
     id: 'bulli',
@@ -65,7 +66,7 @@ export const PROJECTS: ProjectItem[] = [
     github: 'https://github.com/vhaueisen/build-your-bulli',
     link: 'https://vhaueisen.github.io/build-your-bulli',
     featured: true,
-    color: '#a855f7',
+    color: COLORS.purple,
   },
   {
     id: 'vale-ra',
@@ -77,7 +78,7 @@ export const PROJECTS: ProjectItem[] = [
     tags: ['Unity', 'C#', 'ARFoundation', 'Android', 'iOS'],
     github: 'https://github.com/vhaueisen/vale-ra',
     featured: true,
-    color: '#22d3ee',
+    color: COLORS.cyan,
   },
   {
     id: 'realink',
@@ -89,7 +90,7 @@ export const PROJECTS: ProjectItem[] = [
     tags: ['SvelteKit', 'Gmail API', 'OAuth', 'Vite', 'JavaScript'],
     github: 'https://github.com/vhaueisen/realink-io',
     featured: false,
-    color: '#22d3ee',
+    color: COLORS.cyan,
   },
 ]
 

@@ -1,3 +1,4 @@
+import type { CSSColor } from '../constants/colors'
 import type { ReactNode } from 'react'
 
 // ─── Navigation ──────────────────────────────────────────────────────────────
@@ -19,11 +20,16 @@ export interface StoreLink {
   sub: string
   icon: ReactNode
   href: string
-  color: string
-  bg: string
-  border: string
-  hoverBg: string
-  hoverBorder: string
+  /** Branded CSS color — must use COLORS.* or css() helper. */
+  color: CSSColor
+  /** Branded CSS color background (e.g. rgba alpha variant). */
+  bg: CSSColor
+  /** Branded CSS color border. */
+  border: CSSColor
+  /** Branded CSS color background on hover. */
+  hoverBg: CSSColor
+  /** Branded CSS color border on hover. */
+  hoverBorder: CSSColor
 }
 
 // ─── Experience ──────────────────────────────────────────────────────────────
@@ -33,7 +39,8 @@ export interface ExperienceItem {
   company: string
   period: string
   type: string
-  color: string
+  /** Branded CSS color — must use COLORS.* or css() helper. */
+  color: CSSColor
   bullets: string[]
 }
 
@@ -53,20 +60,27 @@ export interface ProjectItem {
   playStore?: string
   appStore?: string
   featured: boolean
-  color: string
+  /** Branded CSS color — must use COLORS.* or css() helper. */
+  color: CSSColor
 }
 
 // ─── Skills ──────────────────────────────────────────────────────────────────
 
 export interface Skill {
   name: string
-  icon: ReactNode | null
+  /**
+   * Optional icon element for the tag pill.
+   * Typed as `ReactNode | undefined` (not null) to match TagPill's icon prop
+   * and avoid `?? undefined` coercions at every call site.
+   */
+  icon: ReactNode | undefined
 }
 
 export interface SkillGroup {
   label: string
   icon: ReactNode
-  color: string
+  /** Branded CSS color — must use COLORS.* or css() helper. */
+  color: CSSColor
   skills: Skill[]
 }
 
@@ -77,5 +91,6 @@ export interface ContactLink {
   label: string
   value: string
   href: string
-  color: string
+  /** Branded CSS color — must use COLORS.* or css() helper. */
+  color: CSSColor
 }

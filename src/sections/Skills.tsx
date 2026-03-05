@@ -54,7 +54,7 @@ function SkillGroupCard({ group, index, inView }: SkillGroupCardProps) {
               transition={{ duration: 0.3, delay: index * 0.1 + i * 0.03 }}
               whileHover={{ scale: 1.05 }}
             >
-              <TagPill label={skill.name} color={group.color} icon={skill.icon ?? undefined} />
+              <TagPill label={skill.name} color={group.color} icon={skill.icon} />
             </motion.div>
           ))}
         </div>

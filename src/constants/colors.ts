@@ -4,38 +4,56 @@
  * border colors, Three.js material colors, Framer Motion keyframes).
  */
 
+/**
+ * Branded type for verified CSS color values.
+ * Prevents raw string literals from being passed where a design token is expected.
+ * Use `COLORS.*` or the `css()` helper for computed alpha variants.
+ */
+export type CSSColor = string & { readonly __brand: 'CSSColor' }
+
+/**
+ * Cast a verified CSS color literal to the branded `CSSColor` type.
+ * Use for computed alpha variants that can't be expressed as a direct COLORS token:
+ * `css(\`rgba(99, 102, 241, 0.15)\`)`
+ */
+export const css = (v: string): CSSColor => v as CSSColor
+
 export const COLORS = {
   // Backgrounds
-  void: '#07070f',
-  surface: '#0d0d1f',
-  surface2: '#13132a',
+  void: css('#07070f'),
+  surface: css('#0d0d1f'),
+  surface2: css('#13132a'),
 
   // Accents
-  indigo: '#6366f1',
-  cyan: '#22d3ee',
-  purple: '#a855f7',
+  indigo: css('#6366f1'),
+  cyan: css('#22d3ee'),
+  purple: css('#a855f7'),
 
   // Text
-  textPrimary: '#f1f5f9',
-  textMuted: '#64748b',
-  textSub: '#94a3b8',
+  textPrimary: css('#f1f5f9'),
+  textMuted: css('#64748b'),
+  textSub: css('#94a3b8'),
 
   // Borders
-  border: 'rgba(99, 102, 241, 0.15)',
-  borderSubtle: 'rgba(99, 102, 241, 0.12)',
+  border: css('rgba(99, 102, 241, 0.15)'),
+  borderSubtle: css('rgba(99, 102, 241, 0.12)'),
 
   // Brand accents (external store links)
-  googlePlay: '#34d399',
-  appStore: '#60a5fa',
+  googlePlay: css('#34d399'),
+  appStore: css('#60a5fa'),
 
   // Glass surface variants (surface color with alpha — for glassCard patterns)
-  surfaceGlass: 'rgba(13, 13, 31, 0.7)',
-  surfaceGlassDark: 'rgba(13, 13, 31, 0.85)',
+  surfaceGlass: css('rgba(13, 13, 31, 0.7)'),
+  surfaceGlassDark: css('rgba(13, 13, 31, 0.85)'),
+  /** Dimmed glass — used for inactive drum-roll cards in the Experience section. */
+  surfaceGlassDim: css('rgba(13, 13, 31, 0.5)'),
 
   // Utility
-  slate800: '#1e293b',
-  slate700: '#334155',
-  slate600: '#475569',
+  slate950: css('#0f172a'),
+  slate800: css('#1e293b'),
+  slate700: css('#334155'),
+  slate600: css('#475569'),
+  slate300: css('#cbd5e1'),
 } as const
 
 export type ColorKey = keyof typeof COLORS

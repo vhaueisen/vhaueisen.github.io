@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion'
 import { COLORS } from '../../constants/colors'
 import { sectionLabel, sectionTitle } from '../../styles'
+import type { Variants } from 'framer-motion'
 import type { ReactNode, CSSProperties } from 'react'
 
 interface SectionHeadingProps {
@@ -15,6 +16,24 @@ interface SectionHeadingProps {
   /** Tailwind / style overrides on the h2. */
   titleStyle?: CSSProperties
   className?: string
+}
+
+// Animation variants are defined outside the component so they are stable
+// references — not recreated on every render (Framer Motion best practice).
+
+const labelVariants: Variants = {
+  hidden: { opacity: 0, x: -20 },
+  visible: { opacity: 1, x: 0, transition: { duration: 0.5 } },
+}
+
+const titleVariants: Variants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.5, delay: 0.1 } },
+}
+
+const subtitleVariants: Variants = {
+  hidden: { opacity: 0, y: 16 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.5, delay: 0.2 } },
 }
 
 /**
@@ -32,18 +51,18 @@ export function SectionHeading({
   return (
     <div className={className}>
       <motion.div
-        initial={{ opacity: 0, x: -20 }}
-        animate={inView ? { opacity: 1, x: 0 } : {}}
-        transition={{ duration: 0.5 }}
+        variants={labelVariants}
+        initial="hidden"
+        animate={inView ? 'visible' : 'hidden'}
         style={sectionLabel}
       >
         {label}
       </motion.div>
 
       <motion.h2
-        initial={{ opacity: 0, y: 20 }}
-        animate={inView ? { opacity: 1, y: 0 } : {}}
-        transition={{ duration: 0.5, delay: 0.1 }}
+        variants={titleVariants}
+        initial="hidden"
+        animate={inView ? 'visible' : 'hidden'}
         style={{ ...sectionTitle, ...titleStyle }}
       >
         {title}
@@ -51,9 +70,9 @@ export function SectionHeading({
 
       {subtitle && (
         <motion.p
-          initial={{ opacity: 0, y: 16 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.5, delay: 0.2 }}
+          variants={subtitleVariants}
+          initial="hidden"
+          animate={inView ? 'visible' : 'hidden'}
           className="mt-4"
           style={{ color: COLORS.textMuted, fontSize: '0.95rem' }}
         >

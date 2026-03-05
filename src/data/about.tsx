@@ -1,5 +1,5 @@
 import { SiGoogleplay, SiAppstore } from 'react-icons/si'
-import { COLORS } from '../constants/colors'
+import { COLORS, css } from '../constants/colors'
 import type { StatItem, StoreLink } from '../types'
 
 export const STATS: StatItem[] = [
@@ -24,10 +24,10 @@ export const STORE_LINKS: StoreLink[] = [
     icon: <SiGoogleplay size={18} />,
     href: 'https://play.google.com/store/apps/dev?id=7255636574877532443&hl=pt',
     color: COLORS.googlePlay,
-    bg: 'rgba(52,211,153,0.08)',
-    border: 'rgba(52,211,153,0.25)',
-    hoverBg: 'rgba(52,211,153,0.15)',
-    hoverBorder: 'rgba(52,211,153,0.5)',
+    bg: css('rgba(52,211,153,0.08)'),
+    border: css('rgba(52,211,153,0.25)'),
+    hoverBg: css('rgba(52,211,153,0.15)'),
+    hoverBorder: css('rgba(52,211,153,0.5)'),
   },
   {
     label: 'App Store',
@@ -35,9 +35,9 @@ export const STORE_LINKS: StoreLink[] = [
     icon: <SiAppstore size={18} />,
     href: 'https://apps.apple.com/br/developer/realink-solucoes-em-jogos-eletronicos-ltda/id1563589903',
     color: COLORS.appStore,
-    bg: 'rgba(96,165,250,0.08)',
-    border: 'rgba(96,165,250,0.25)',
-    hoverBg: 'rgba(96,165,250,0.15)',
-    hoverBorder: 'rgba(96,165,250,0.5)',
+    bg: css('rgba(96,165,250,0.08)'),
+    border: css('rgba(96,165,250,0.25)'),
+    hoverBg: css('rgba(96,165,250,0.15)'),
+    hoverBorder: css('rgba(96,165,250,0.5)'),
   },
 ]

@@ -1,99 +1,40 @@
-import { motion, useInView, useScroll } from 'framer-motion'
-import { useState, useRef, useEffect, useLayoutEffect } from 'react'
+import { motion } from 'framer-motion'
+import { useRef, useState, useLayoutEffect, useMemo } from 'react'
+import { COLORS } from '../constants/colors'
+import { EXPERIENCE } from '../data/experience'
+import { useScrollDrum, ITEM_HEIGHT, SCROLL_PER_ITEM } from '../hooks/useScrollDrum'
+import { useSectionInView } from '../hooks/useSectionInView'
+import { sectionLabel, sectionTitle, periodBadge } from '../styles'
 
-const ITEM_HEIGHT = 110
-const SCROLL_PER_ITEM = 320
+// ── Layout constants ──────────────────────────────────────────────────────────
+/** Gap between stacked detail cards in the right panel (px). */
+const CARD_GAP = 0
+/** Half the fixed 380 px viewport height — used to centre the active card. */
+const CONTAINER_CENTER = 190
 
-const EXPERIENCE = [
-    {
-        role: 'Mobile Developer',
-        company: 'Geoforce',
-        period: 'Sep 2025 – Present',
-        type: 'Remote',
-        color: '#6366f1',
-        bullets: [
-            "Architected the company's first mobile white-label platform — single codebase, multiple branded apps, 50% reduction in dev overhead.",
-            'Automated multi-flavor Fastlane pipeline for code signing, environment config, and Play/App Store deployment.',
-            'Led React Native 0.74 → 0.82 migration with zero business disruption.',
-            'Directed migration from bare RN workflow to Expo managed workflow.',
-        ],
-    },
-    {
-        role: 'Mobile Developer',
-        company: 'Slate Teams',
-        period: 'Mar 2025 – Sep 2025',
-        type: 'Remote',
-        color: '#22d3ee',
-        bullets: [
-            'Led brownfield React Native integration into production Swift/Kotlin apps, designing the bridging strategy.',
-            'Implemented feature flagging for controlled rollouts and safer experimentation.',
-            'Developed robust E2E test coverage across native and RN components.',
-            'Leveraged Cursor and AI-assisted workflows to accelerate implementation.',
-        ],
-    },
-    {
-        role: 'Software Engineer & Co-Founder',
-        company: 'Rogue Unit',
-        period: 'Feb 2020 – Jul 2025',
-        type: 'Remote',
-        color: '#a855f7',
-        bullets: [
-            'Led a team of 4 developers, mentoring engineers and coordinating delivery across concurrent client projects.',
-            'Directed interactive web & mobile experiences for Nestlé, Coca-Cola, and Palmeiras.',
-            'Designed scalable front-end architectures and animation systems inspired by game dev.',
-            'Structured CI/CD pipelines and deployment workflows for multi-platform projects.',
-        ],
-    },
-    {
-        role: 'Mobile & Web Developer',
-        company: 'IndustriALL',
-        period: 'May 2022 – Oct 2022',
-        type: 'Vitória, Brazil',
-        color: '#22d3ee',
-        bullets: [
-            'Refactored Angular/Ionic app — 50% performance improvement, 90% faster load times.',
-            'Created CI/CD pipelines and deployed the solution on-site.',
-        ],
-    },
-    {
-        role: 'Mobile Developer Intern',
-        company: 'Vale S.A.',
-        period: 'Oct 2019 – Aug 2021',
-        type: 'Vitória, Brazil',
-        color: '#6366f1',
-        bullets: [
-            'Developed and deployed Vale RA — a gamified AR mobile training app for field maintenance.',
-            'Built GC Digital, a web learning platform with dynamic content features.',
-        ],
-    },
-]
+// ── Stable animation variants (module-scope prevents per-render re-allocation) ─
+const labelVariants = {
+    hidden: { opacity: 0, x: -20 },
+    visible: { opacity: 1, x: 0 },
+} as const
+
+const titleVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0 },
+} as const
+
+const gridVariants = {
+    hidden: { opacity: 0, y: 30 },
+    visible: { opacity: 1, y: 0 },
+} as const
 
 export default function Experience() {
-    const headingRef = useRef<HTMLDivElement>(null)
-    const scrollTrackRef = useRef<HTMLDivElement>(null)
-    const inView = useInView(headingRef, { once: true, margin: '-80px' })
+    const [headingRef, inView] = useSectionInView<HTMLDivElement>()
+    const { scrollTrackRef, selectedIndex, drumPos } = useScrollDrum<HTMLDivElement>(
+        EXPERIENCE.length,
+    )
 
-    const [selectedIndex, setSelectedIndex] = useState(0)
-    const [drumPos, setDrumPos] = useState(0)
-
-    const { scrollYProgress } = useScroll({
-        target: scrollTrackRef,
-        offset: ['start start', 'end end'],
-    })
-
-    useEffect(() => {
-        return scrollYProgress.on('change', (v) => {
-            const pos = Math.max(0, Math.min(EXPERIENCE.length - 1, v * (EXPERIENCE.length - 1)))
-            setDrumPos(pos)
-            setSelectedIndex(Math.round(pos))
-        })
-    }, [scrollYProgress])
-
-    const item = EXPERIENCE[selectedIndex]
-
-    // ── Measure actual card heights so the stack centres correctly ──────────
-    const CARD_GAP = 0
-    const CONTAINER_CENTER = 190 // half of the 380px viewport
+    // ── Measure actual card heights so the stack centres correctly ──────────────
     const cardRefs = useRef<(HTMLDivElement | null)[]>([])
     const [cardHeights, setCardHeights] = useState<number[]>([])
 
@@ -105,22 +46,31 @@ export default function Experience() {
         return () => ro.disconnect()
     }, [])
 
-    // Cumulative top-offset of each card in the natural flow column
-    const cumOffsets: number[] = []
-    for (let i = 0; i < EXPERIENCE.length; i++) {
-        cumOffsets.push(i === 0 ? 0 : (cumOffsets[i - 1] ?? 0) + (cardHeights[i - 1] ?? 0) + CARD_GAP)
-    }
-    const measured = cardHeights.some((h) => h > 0)
+    // ── Memoised geometry computations (driven by drumPos state at ~60fps) ───────
+    const { cumOffsets, measured, activeCenter, stackTranslateY } = useMemo(() => {
+        const offsets: number[] = []
+        for (let i = 0; i < EXPERIENCE.length; i++) {
+            offsets.push(i === 0 ? 0 : (offsets[i - 1] ?? 0) + (cardHeights[i - 1] ?? 0) + CARD_GAP)
+        }
+        const isMeasured = cardHeights.some((h) => h > 0)
 
-    // Smoothly interpolate the center point of the "active" card (drumPos is fractional)
-    const floorIdx = Math.floor(drumPos)
-    const ceilIdx = Math.min(Math.ceil(drumPos), EXPERIENCE.length - 1)
-    const frac = drumPos - floorIdx
-    const centerOf = (idx: number) => (cumOffsets[idx] ?? 0) + (cardHeights[idx] ?? 0) / 2
-    const activeCenter = measured
-        ? centerOf(floorIdx) + frac * (centerOf(ceilIdx) - centerOf(floorIdx))
-        : floorIdx * 300
-    const stackTranslateY = measured ? CONTAINER_CENTER - activeCenter : 0
+        const floorIdx = Math.floor(drumPos)
+        const ceilIdx = Math.min(Math.ceil(drumPos), EXPERIENCE.length - 1)
+        const frac = drumPos - floorIdx
+        const centerOf = (idx: number) => (offsets[idx] ?? 0) + (cardHeights[idx] ?? 0) / 2
+        const center = isMeasured
+            ? centerOf(floorIdx) + frac * (centerOf(ceilIdx) - centerOf(floorIdx))
+            : floorIdx * 300
+
+        return {
+            cumOffsets: offsets,
+            measured: isMeasured,
+            activeCenter: center,
+            stackTranslateY: isMeasured ? CONTAINER_CENTER - center : 0,
+        }
+    }, [cardHeights, drumPos])
+
+    const item = EXPERIENCE[selectedIndex]
 
     return (
         // Outer element carries the section id for the navbar observer
@@ -144,44 +94,32 @@ export default function Experience() {
                     >
                         <div ref={headingRef}>
                             <motion.div
-                                initial={{ opacity: 0, x: -20 }}
-                                animate={inView ? { opacity: 1, x: 0 } : {}}
+                                variants={labelVariants}
+                                initial="hidden"
+                                animate={inView ? 'visible' : 'hidden'}
                                 transition={{ duration: 0.5 }}
-                                style={{
-                                    fontSize: '0.8rem',
-                                    textTransform: 'uppercase',
-                                    letterSpacing: '0.15em',
-                                    color: '#6366f1',
-                                    fontWeight: 600,
-                                    marginBottom: '12px',
-                                }}
+                                style={sectionLabel}
                             >
                                 Experience
                             </motion.div>
                             <motion.h2
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={inView ? { opacity: 1, y: 0 } : {}}
+                                variants={titleVariants}
+                                initial="hidden"
+                                animate={inView ? 'visible' : 'hidden'}
                                 transition={{ duration: 0.5, delay: 0.1 }}
-                                style={{
-                                    fontSize: 'clamp(1.8rem, 4vw, 2.5rem)',
-                                    fontWeight: 800,
-                                    letterSpacing: '-0.03em',
-                                    color: '#f1f5f9',
-                                }}
+                                style={sectionTitle}
                             >
-                                Where I've worked
+                                Where I&#39;ve worked
                             </motion.h2>
                         </div>
 
                         <motion.div
                             className="exp-grid"
-                            initial={{ opacity: 0, y: 30 }}
-                            animate={inView ? { opacity: 1, y: 0 } : {}}
+                            variants={gridVariants}
+                            initial="hidden"
+                            animate={inView ? 'visible' : 'hidden'}
                             transition={{ duration: 0.6, delay: 0.2 }}
-                            style={{
-                                display: 'grid',
-                                alignItems: 'center',
-                            }}
+                            style={{ display: 'grid', alignItems: 'center' }}
                         >
                             {/* ── Vertical timeline (desktop) ── */}
                             <div
@@ -200,7 +138,7 @@ export default function Experience() {
                                         top: ITEM_HEIGHT / 2,
                                         width: '2px',
                                         height: (EXPERIENCE.length - 1) * ITEM_HEIGHT,
-                                        background: '#1e293b',
+                                        background: COLORS.slate800,
                                         zIndex: 1,
                                     }}
                                 />
@@ -212,9 +150,8 @@ export default function Experience() {
                                         top: ITEM_HEIGHT / 2,
                                         width: '2px',
                                         height: `${Math.min(drumPos * ITEM_HEIGHT, (EXPERIENCE.length - 1) * ITEM_HEIGHT)}px`,
-                                        background: `linear-gradient(to bottom, #6366f1, ${item.color})`,
+                                        background: `linear-gradient(to bottom, ${COLORS.indigo}, ${item.color})`,
                                         zIndex: 1,
-                                        transition: 'height 0.25s ease, background 0.4s',
                                     }}
                                 />
                                 {/* Dots — static, not tilted */}
@@ -228,8 +165,8 @@ export default function Experience() {
                                             width: '14px',
                                             height: '14px',
                                             borderRadius: '50%',
-                                            background: i <= selectedIndex ? exp.color : '#0f172a',
-                                            border: `2px solid ${i <= selectedIndex ? exp.color : '#334155'}`,
+                                            background: i <= selectedIndex ? exp.color : COLORS.slate950,
+                                            border: `2px solid ${i <= selectedIndex ? exp.color : COLORS.slate700}`,
                                             boxShadow: i === selectedIndex ? `0 0 14px ${exp.color}` : 'none',
                                             zIndex: 3,
                                             transition: 'background 0.4s, border-color 0.4s, box-shadow 0.4s',
@@ -266,7 +203,7 @@ export default function Experience() {
                                                     style={{
                                                         fontWeight: 700,
                                                         fontSize: '0.95rem',
-                                                        color: isActive ? exp.color : '#cbd5e1',
+                                                        color: isActive ? exp.color : COLORS.slate300,
                                                         transition: 'color 0.35s',
                                                         lineHeight: 1.2,
                                                     }}
@@ -276,7 +213,7 @@ export default function Experience() {
                                                 <div
                                                     style={{
                                                         fontSize: '0.75rem',
-                                                        color: isActive ? '#64748b' : '#334155',
+                                                        color: isActive ? COLORS.textMuted : COLORS.slate700,
                                                         marginTop: '2px',
                                                         transition: 'color 0.35s',
                                                     }}
@@ -292,7 +229,7 @@ export default function Experience() {
                                                         border: `1px solid ${isActive ? exp.color + '35' : 'transparent'}`,
                                                         borderRadius: '100px',
                                                         fontSize: '0.68rem',
-                                                        color: isActive ? exp.color : '#475569',
+                                                        color: isActive ? exp.color : COLORS.slate600,
                                                         fontWeight: 500,
                                                         width: 'fit-content',
                                                         transition: 'all 0.35s',
@@ -325,7 +262,7 @@ export default function Experience() {
                                                 top: '50%',
                                                 transform: 'translateY(-50%)',
                                                 height: '2px',
-                                                background: '#1e293b',
+                                                background: COLORS.slate800,
                                                 zIndex: 1,
                                             }}
                                         />
@@ -341,9 +278,8 @@ export default function Experience() {
                                                     EXPERIENCE.length > 1
                                                         ? `calc(${(Math.min(drumPos, EXPERIENCE.length - 1) / (EXPERIENCE.length - 1)) * 100}% - 14px)`
                                                         : '0',
-                                                background: `linear-gradient(to left, #6366f1, ${item.color})`,
+                                                background: `linear-gradient(to left, ${COLORS.indigo}, ${item.color})`,
                                                 zIndex: 2,
-                                                transition: 'width 0.25s ease',
                                             }}
                                         />
                                         {/* Dots — oldest left, newest right */}
@@ -372,8 +308,8 @@ export default function Experience() {
                                                             width: '14px',
                                                             height: '14px',
                                                             borderRadius: '50%',
-                                                            background: isFilled ? exp.color : '#0f172a',
-                                                            border: `2px solid ${isFilled ? exp.color : '#334155'}`,
+                                                            background: isFilled ? exp.color : COLORS.slate950,
+                                                            border: `2px solid ${isFilled ? exp.color : COLORS.slate700}`,
                                                             boxShadow: isActive ? `0 0 14px ${exp.color}` : 'none',
                                                             transition: 'background 0.4s, border-color 0.4s, box-shadow 0.4s',
                                                         }}
@@ -394,7 +330,7 @@ export default function Experience() {
                                                         flex: 1,
                                                         fontSize: '0.65rem',
                                                         fontWeight: isActive ? 700 : 400,
-                                                        color: isActive ? exp.color : '#475569',
+                                                        color: isActive ? exp.color : COLORS.slate600,
                                                         transition: 'color 0.35s',
                                                         textAlign:
                                                             j === 0 ? 'left' : j === EXPERIENCE.length - 1 ? 'right' : 'center',
@@ -468,8 +404,8 @@ export default function Experience() {
                                                     style={{
                                                         padding: '28px 32px',
                                                         background: isActive
-                                                            ? 'rgba(13, 13, 31, 0.85)'
-                                                            : 'rgba(13, 13, 31, 0.5)',
+                                                            ? COLORS.surfaceGlassDark
+                                                            : COLORS.surfaceGlassDim,
                                                         backdropFilter: 'blur(12px)',
                                                         border: `1px solid ${exp.color}${isActive ? '40' : '18'}`,
                                                         borderRadius: '20px',
@@ -492,7 +428,7 @@ export default function Experience() {
                                                                 style={{
                                                                     fontSize: '1.05rem',
                                                                     fontWeight: 700,
-                                                                    color: '#f1f5f9',
+                                                                    color: COLORS.textPrimary,
                                                                     marginBottom: '5px',
                                                                 }}
                                                             >
@@ -511,24 +447,13 @@ export default function Experience() {
                                                                 >
                                                                     {exp.company}
                                                                 </span>
-                                                                <span style={{ color: '#334155' }}>·</span>
-                                                                <span style={{ color: '#475569', fontSize: '0.78rem' }}>
+                                                                <span style={{ color: COLORS.slate700 }}>·</span>
+                                                                <span style={{ color: COLORS.slate600, fontSize: '0.78rem' }}>
                                                                     {exp.type}
                                                                 </span>
                                                             </div>
                                                         </div>
-                                                        <span
-                                                            style={{
-                                                                padding: '4px 12px',
-                                                                background: `${exp.color}15`,
-                                                                border: `1px solid ${exp.color}35`,
-                                                                borderRadius: '100px',
-                                                                fontSize: '0.72rem',
-                                                                color: exp.color,
-                                                                fontWeight: 600,
-                                                                whiteSpace: 'nowrap',
-                                                            }}
-                                                        >
+                                                        <span style={periodBadge(exp.color)}>
                                                             {exp.period}
                                                         </span>
                                                     </div>
@@ -549,14 +474,14 @@ export default function Experience() {
                                                             gap: '8px',
                                                         }}
                                                     >
-                                                        {exp.bullets.map((bullet, bi) => (
+                                                        {exp.bullets.map((bullet) => (
                                                             <li
-                                                                key={bi}
+                                                                key={bullet.slice(0, 40)}
                                                                 style={{
                                                                     display: 'flex',
                                                                     gap: '9px',
                                                                     fontSize: '0.82rem',
-                                                                    color: isActive ? '#94a3b8' : '#475569',
+                                                                    color: isActive ? COLORS.textSub : COLORS.slate600,
                                                                     lineHeight: 1.6,
                                                                     transition: 'color 0.4s',
                                                                 }}
@@ -586,21 +511,7 @@ export default function Experience() {
                 </div>
             </div>
 
-            <style>{`
-                .exp-grid {
-                    grid-template-columns: minmax(220px, 300px) 1fr;
-                    gap: 48px;
-                }
-                .exp-timeline-horiz { display: none; }
-                @media (max-width: 899px) {
-                    .exp-grid {
-                        grid-template-columns: 1fr !important;
-                        gap: 20px !important;
-                    }
-                    .exp-timeline-vert { display: none; }
-                    .exp-timeline-horiz { display: block; }
-                }
-            `}</style>
+
         </section>
     )
 }

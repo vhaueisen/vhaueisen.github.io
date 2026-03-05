@@ -1,4 +1,5 @@
 import { COLORS } from '../constants/colors'
+import type { CSSColor } from '../constants/colors'
 import type { CSSProperties } from 'react'
 
 /**
@@ -115,3 +116,22 @@ export function accentBorder(color: string, active = false): CSSProperties {
 
 export const indigoCyanGradient = `linear-gradient(135deg, ${COLORS.indigo}, ${COLORS.cyan})`
 export const indigoPurpleGradient = `linear-gradient(135deg, ${COLORS.indigo}, ${COLORS.purple})`
+
+// ─── Utility helpers ─────────────────────────────────────────────────────────
+
+/**
+ * Small uppercase sub-label used inside glass cards
+ * (e.g. “Enterprise Clients”, “Published on”).
+ * Extracted here to prevent the ~6-property object from being duplicated
+ * per call site in the About section (and any future cards).
+ */
+export function cardSectionLabel(color: CSSColor = COLORS.indigo): CSSProperties {
+  return {
+    fontSize: '0.75rem',
+    color,
+    fontWeight: 600,
+    marginBottom: '16px',
+    textTransform: 'uppercase',
+    letterSpacing: '0.1em',
+  }
+}
