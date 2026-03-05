@@ -2,7 +2,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { useState } from 'react'
 import { FiX, FiMenu } from 'react-icons/fi'
 import { COLORS } from '../constants/colors'
-import { NAV_LINKS, RESUME_URL } from '../constants/navigation'
+import { NAV_LINKS } from '../constants/navigation'
 import { useScrollActive } from '../hooks/useScrollActive'
 import { gradientTextShort, indigoCyanGradient90 } from '../styles'
 import type { CSSProperties } from 'react'
@@ -257,24 +257,24 @@ function MobileNavButton({ label, href, isActive, onClick }: NavButtonProps) {
     )
 }
 
-function ResumeButton() {
-    return (
-        <a
-            href={RESUME_URL}
-            download
-            className="nav-resume-btn"
-            style={{
-                padding: '8px 20px',
-                border: `1px solid ${COLORS.indigo}80`,
-                borderRadius: '8px',
-                color: COLORS.indigo,
-                fontSize: '0.875rem',
-                fontWeight: 600,
-                transition: 'background 0.2s, border-color 0.2s',
-                cursor: 'pointer',
-            }}
-        >
-            Resume
-        </a>
-    )
-}
+// function ResumeButton() {
+//     return (
+//         <a
+//             href={RESUME_URL}
+//             download
+//             className="nav-resume-btn"
+//             style={{
+//                 padding: '8px 20px',
+//                 border: `1px solid ${COLORS.indigo}80`,
+//                 borderRadius: '8px',
+//                 color: COLORS.indigo,
+//                 fontSize: '0.875rem',
+//                 fontWeight: 600,
+//                 transition: 'background 0.2s, border-color 0.2s',
+//                 cursor: 'pointer',
+//             }}
+//         >
+//             Resume
+//         </a>
+//     )
+// }
